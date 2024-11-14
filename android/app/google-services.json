@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "350083664838",
+    "project_id": "vetdose-a1b75",
+    "storage_bucket": "vetdose-a1b75.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:350083664838:android:3481c8f26e07d868c300c7",
+        "android_client_info": {
+          "package_name": "com.example.vetdose"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBGMNhY3Ngi-W5-WH9sYc770HvpzEfuFbA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
