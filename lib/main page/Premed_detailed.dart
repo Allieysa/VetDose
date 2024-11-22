@@ -1,7 +1,6 @@
-// ignore_for_file: prefer_const_constructors_in_immutables
+// ignore_for_file: file_names
 
 import 'package:flutter/material.dart';
-//import 'package:cloud_firestore/cloud_firestore.dart';
 import 'controller.dart';
 
 
@@ -11,7 +10,7 @@ class PremedDetailed extends StatelessWidget {
   final double animalWeightKg;
   final double animalWeightLbs;
 
-  PremedDetailed({
+  const PremedDetailed({
     required this.title,
     required this.controller,
     required this.animalWeightKg,
@@ -24,7 +23,7 @@ class PremedDetailed extends StatelessWidget {
       appBar: AppBar(
         title: Text(title),
         leading: IconButton(
-          icon: Icon(Icons.arrow_back),
+          icon: const Icon(Icons.arrow_back),
           onPressed: () {
             Navigator.pop(context);
           },
@@ -38,11 +37,11 @@ class PremedDetailed extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                CircleAvatar(
+                const CircleAvatar(
                   radius: 30,
                   backgroundImage: AssetImage('assets/animal_avatar.png'),
                 ),
-                SizedBox(width: 16),
+                const SizedBox(width: 16),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
@@ -50,12 +49,12 @@ class PremedDetailed extends StatelessWidget {
                       children: [
                         Text(
                           '$animalWeightKg kg',
-                          style: TextStyle(fontSize: 16),
+                          style: const TextStyle(fontSize: 16),
                         ),
-                        SizedBox(width: 8),
+                        const SizedBox(width: 8),
                         Text(
                           '$animalWeightLbs lbs',
-                          style: TextStyle(fontSize: 16),
+                          style: const TextStyle(fontSize: 16),
                         ),
                       ],
                     ),
@@ -63,7 +62,7 @@ class PremedDetailed extends StatelessWidget {
                 ),
               ],
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
 
             // Protocol details
             Expanded(
@@ -97,9 +96,9 @@ class PremedDetailed extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(title, style: TextStyle(fontWeight: FontWeight.bold)),
+            Text(title, style: const TextStyle(fontWeight: FontWeight.bold)),
             Text('($concentration)'),
-            SizedBox(height: 10),
+            const SizedBox(height: 10),
             ...doses.map((dose) {
               return Padding(
                 padding: const EdgeInsets.symmetric(vertical: 4.0),
@@ -108,7 +107,7 @@ class PremedDetailed extends StatelessWidget {
                   children: [
                     Text(dose['label']!),
                     Container(
-                      padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                       decoration: BoxDecoration(
                         color: Colors.grey.shade200,
                         borderRadius: BorderRadius.circular(8),
@@ -118,7 +117,7 @@ class PremedDetailed extends StatelessWidget {
                   ],
                 ),
               );
-            }).toList(),
+            }),
           ],
         ),
       ),
@@ -130,7 +129,7 @@ class PremedDetailed extends StatelessWidget {
       child: Center(
         child: Text(
           title,
-          style: TextStyle(fontSize: 16, color: Colors.grey),
+          style: const TextStyle(fontSize: 16, color: Colors.grey),
         ),
       ),
     );

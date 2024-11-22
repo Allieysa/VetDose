@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print
+
 import 'package:vetdose/Formulas/formula_firestore.dart';
 
 final FormulaService formulaService = FormulaService();

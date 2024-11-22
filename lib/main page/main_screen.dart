@@ -1,10 +1,11 @@
-// ignore_for_file: use_key_in_widget_constructors, prefer_const_constructors
+// ignore_for_file: use_key_in_widget_constructors, prefer_const_constructors, library_private_types_in_public_api
 
 import 'package:flutter/material.dart';
 import 'controller.dart';
 import 'package:vetdose/bottom_nav_bar.dart';
 import 'package:vetdose/main page/Premed_detailed.dart';
 import 'package:vetdose/Formulas/kgToLbs.dart'; // Import the KgToLbsConverter
+import 'package:vetdose/main page/emergency_page.dart';
 
 class MainScreen extends StatefulWidget {
   @override
@@ -50,55 +51,80 @@ class _MainScreenState extends State<MainScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Home screen'),
+        title: Row(
+          children: [
+            Text(
+              'Hello Allieysa!',
+              style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold),
+            ),
+          ],
+        ),
+        centerTitle: false, // Ensure the title is not centered
+        automaticallyImplyLeading: false, // Remove the back button arrow
       ),
       body: Column(
         children: [
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text('Hello Allieysa!', style: TextStyle(fontSize: 20)),
-                CircleAvatar(
-                  radius: 40,
-                  backgroundImage: AssetImage('assets/animal_avatar.png'),
-                ),
-              ],
-            ),
-          ),
           Text(
-            'Choose animal',
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            'This dosage only for:',
+            style: TextStyle(fontSize: 11),
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
-            children: List.generate(5, (index) {
-              return Padding(
+            children: [
+              Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: CircleAvatar(
-                  radius: 30,
-                  backgroundColor: Colors.grey.shade300,
-                  child: Icon(Icons.pets),
+                  radius: 40, // Fixed size for simplicity
+                  backgroundImage: AssetImage('assets/cat.png'), // Cat logo
                 ),
-              );
-            }),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: CircleAvatar(
+                  radius: 40, // Fixed size for simplicity
+                  backgroundImage: AssetImage('assets/dog.png'), // Dog logo
+                ),
+              ),
+            ],
           ),
           Padding(
-            padding: const EdgeInsets.symmetric(vertical: 20.0),
+            padding: const EdgeInsets.symmetric(vertical: 10.0),
             child: ValueListenableBuilder<bool>(
               valueListenable: controller.isKgNotifier,
               builder: (context, isKg, child) {
-                return TextField(
-                  controller: controller.weightController,
-                  decoration: InputDecoration(
-                    labelText: 'Enter weight',
-                    suffix: TextButton(
-                      onPressed: controller.toggleWeightUnit,
-                      child: Text(isKg ? 'kg' : 'lbs'),
-                    ),
+                return Container(
+                  width: 300, // Adjust size as needed
+                  height: 60, // Adjust height for a better appearance
+                  padding: EdgeInsets.symmetric(horizontal: 16),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(10),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.grey.withOpacity(0.5),
+                        spreadRadius: 1,
+                        blurRadius: 5,
+                        offset: Offset(0, 3),
+                      ),
+                    ],
                   ),
-                  keyboardType: TextInputType.number,
+                  child: TextField(
+                    controller: controller.weightController,
+                    decoration: InputDecoration(
+                      labelText: 'Enter weight',
+                      floatingLabelBehavior:
+                          FloatingLabelBehavior.auto, // Floating label behavior
+                      labelStyle: TextStyle(
+                        color: Colors.grey, // Label color when inactive
+                      ),
+                      border: InputBorder.none, // Keeps the clean box design
+                      suffix: Text(
+                        isKg ? 'kg' : 'lbs', // Keeps the toggle functionality
+                        style: TextStyle(color: Colors.grey),
+                      ),
+                    ),
+                    keyboardType: TextInputType.number,
+                  ),
                 );
               },
             ),
@@ -106,13 +132,13 @@ class _MainScreenState extends State<MainScreen> {
           Expanded(
             child: ListView(
               children: [
-                _buildProtocolItem('Pre-med'),
-                _buildProtocolItem('Emergency'),
-                _buildProtocolItem('Induction'),
-                _buildProtocolItem('Intubation'),
-                _buildProtocolItem('Local block'),
-                _buildProtocolItem('Inotropic'),
-                _buildProtocolItem('Maintenance'),
+                _buildProtocolItem('Pre-med', PremedDetailed()), // Pass the specific page
+                _buildProtocolItem('Emergency', EmergencyPage()),
+                _buildProtocolItem('Induction', InductionPage()),
+                _buildProtocolItem('Intubation', IntubationPage()),
+                _buildProtocolItem('Local block', LocalBlockPage()),
+                _buildProtocolItem('Inotropic', InotropicPage()),
+                _buildProtocolItem('Maintenance', MaintenancePage()),
               ],
             ),
           ),
@@ -125,13 +151,16 @@ class _MainScreenState extends State<MainScreen> {
     );
   }
 
-  Widget _buildProtocolItem(String title) {
+  Widget _buildProtocolItem(String title, Widget page) {
     return ListTile(
       title: Text(title),
       trailing: Icon(Icons.arrow_forward),
       onTap: () {
-        print('$title selected');
-        _navigateToPremedDetailed(title); // Call the async function to navigate
+        // Navigate to the specific page
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => page),
+        );
       },
     );
   }
