@@ -1,11 +1,12 @@
-// ignore_for_file: use_key_in_widget_constructors, prefer_const_constructors, library_private_types_in_public_api
+// ignore_for_file: use_key_in_widget_constructors, prefer_const_constructors, library_private_types_in_public_api, prefer_const_literals_to_create_immutables, use_build_context_synchronously
 
 import 'package:flutter/material.dart';
 import 'controller.dart';
 import 'package:vetdose/bottom_nav_bar.dart';
-import 'package:vetdose/main page/Premed_detailed.dart';
+import 'package:vetdose/main%20page/premed_page.dart';
 import 'package:vetdose/Formulas/kgToLbs.dart'; // Import the KgToLbsConverter
 import 'package:vetdose/main page/emergency_page.dart';
+import 'package:vetdose/main page/induction_page.dart';
 
 class MainScreen extends StatefulWidget {
   @override
@@ -22,29 +23,6 @@ class _MainScreenState extends State<MainScreen> {
       _currentIndex = index;
     });
     controller.onTabTapped(index, context);
-  }
-
-  Future<void> _navigateToPremedDetailed(String title) async {
-    // Get the weight in kg from the controller's TextField
-    final double animalWeightKg =
-        double.tryParse(controller.weightController.text) ?? 0.0;
-
-    // Convert kg to lbs using KgToLbsConverter
-    final double? animalWeightLbs = await converter.convert(animalWeightKg);
-
-    // Navigate to PremedDetailed, passing both kg and lbs weights
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => PremedDetailed(
-          title: title,
-          controller: controller,
-          animalWeightKg: animalWeightKg,
-          animalWeightLbs:
-              animalWeightLbs ?? 0.0, // Provide a default value in case of null
-        ),
-      ),
-    );
   }
 
   @override
@@ -65,7 +43,7 @@ class _MainScreenState extends State<MainScreen> {
       body: Column(
         children: [
           Text(
-            'This dosage only for:',
+            'This dosage is only for:',
             style: TextStyle(fontSize: 11),
           ),
           Row(
@@ -132,13 +110,13 @@ class _MainScreenState extends State<MainScreen> {
           Expanded(
             child: ListView(
               children: [
-                _buildProtocolItem('Pre-med', PremedDetailed()), // Pass the specific page
-                _buildProtocolItem('Emergency', EmergencyPage()),
-                _buildProtocolItem('Induction', InductionPage()),
-                _buildProtocolItem('Intubation', IntubationPage()),
-                _buildProtocolItem('Local block', LocalBlockPage()),
-                _buildProtocolItem('Inotropic', InotropicPage()),
-                _buildProtocolItem('Maintenance', MaintenancePage()),
+                _buildProtocolItem('Pre-med'),
+                _buildProtocolItem('Emergency', page: EmergencyPage()),
+                _buildProtocolItem('Induction', page: InductionPage()),
+                // _buildProtocolItem('Intubation', page: IntubationPage()),
+                // _buildProtocolItem('Local block', page: LocalBlockPage()),
+                //_buildProtocolItem('Inotropic', page: InotropicPage()),
+                // _buildProtocolItem('Maintenance', page: MaintenancePage()),
               ],
             ),
           ),
@@ -151,16 +129,35 @@ class _MainScreenState extends State<MainScreen> {
     );
   }
 
-  Widget _buildProtocolItem(String title, Widget page) {
+  Widget _buildProtocolItem(String title, {Widget? page}) {
     return ListTile(
       title: Text(title),
       trailing: Icon(Icons.arrow_forward),
-      onTap: () {
-        // Navigate to the specific page
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => page),
-        );
+      onTap: () async {
+        if (title == 'Pre-med') {
+          // Calculate weights dynamically for PremedDetailed
+          final double weightKg =
+              double.tryParse(controller.weightController.text) ?? 0.0;
+         
+
+         // Navigate to PremedDetailed
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => PremedDetailed(
+                title: title,
+                initialWeightKg: weightKg,
+              ),
+            ),
+          );
+
+        } else if (page != null) {
+          // Navigate to other pages without parameters
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => page),
+          );
+        }
       },
     );
   }

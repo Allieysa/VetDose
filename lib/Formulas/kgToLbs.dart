@@ -1,4 +1,4 @@
-import 'package:vetdose/Formulas/formula_firestore.dart';
+import 'package:vetdose/Formulas/formula_service.dart';
 import 'package:expressions/expressions.dart'; // Import expressions package
 
 class KgToLbsConverter {
