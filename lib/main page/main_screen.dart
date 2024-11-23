@@ -4,9 +4,7 @@ import 'package:flutter/material.dart';
 import 'controller.dart';
 import 'package:vetdose/bottom_nav_bar.dart';
 import 'package:vetdose/main%20page/premed_page.dart';
-import 'package:vetdose/Formulas/kgToLbs.dart'; // Import the KgToLbsConverter
-import 'package:vetdose/main page/emergency_page.dart';
-import 'package:vetdose/main page/induction_page.dart';
+import 'package:vetdose/main%20page/category_page.dart';
 
 class MainScreen extends StatefulWidget {
   @override
@@ -15,7 +13,6 @@ class MainScreen extends StatefulWidget {
 
 class _MainScreenState extends State<MainScreen> {
   final Controller controller = Controller();
-  final KgToLbsConverter converter = KgToLbsConverter();
   int _currentIndex = 2; // Default to Home
 
   void _onTabTapped(int index) {
@@ -110,13 +107,10 @@ class _MainScreenState extends State<MainScreen> {
           Expanded(
             child: ListView(
               children: [
-                _buildProtocolItem('Pre-med'),
-                _buildProtocolItem('Emergency', page: EmergencyPage()),
-                _buildProtocolItem('Induction', page: InductionPage()),
-                // _buildProtocolItem('Intubation', page: IntubationPage()),
-                // _buildProtocolItem('Local block', page: LocalBlockPage()),
-                //_buildProtocolItem('Inotropic', page: InotropicPage()),
-                // _buildProtocolItem('Maintenance', page: MaintenancePage()),
+                _buildProtocolItem('Pre-med', category: 'Premed'),
+                _buildProtocolItem('Emergency', category: 'Emergency'),
+                _buildProtocolItem('Induction', category: 'Induction'),
+                // Add more categories here as needed
               ],
             ),
           ),
@@ -129,18 +123,16 @@ class _MainScreenState extends State<MainScreen> {
     );
   }
 
-  Widget _buildProtocolItem(String title, {Widget? page}) {
+  Widget _buildProtocolItem(String title, {String? category}) {
     return ListTile(
       title: Text(title),
       trailing: Icon(Icons.arrow_forward),
       onTap: () async {
-        if (title == 'Pre-med') {
-          // Calculate weights dynamically for PremedDetailed
-          final double weightKg =
-              double.tryParse(controller.weightController.text) ?? 0.0;
-         
+        final double weightKg =
+            double.tryParse(controller.weightController.text) ?? 0.0;
 
-         // Navigate to PremedDetailed
+        if (title == 'Pre') {
+          // Navigate to PremedDetailed and pass the weight
           Navigator.push(
             context,
             MaterialPageRoute(
@@ -150,12 +142,21 @@ class _MainScreenState extends State<MainScreen> {
               ),
             ),
           );
-
-        } else if (page != null) {
-          // Navigate to other pages without parameters
+        } else if (category != null) {
+          // Navigate to CategoryPage for other categories
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => page),
+            MaterialPageRoute(
+              builder: (context) => CategoryPage(
+                category: category,
+                weightKg: weightKg,
+              ),
+            ),
+          );
+        } else {
+          // Handle error or unknown category
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text("Page for $title is not available.")),
           );
         }
       },

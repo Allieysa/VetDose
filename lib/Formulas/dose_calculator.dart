@@ -2,10 +2,10 @@ import 'package:expressions/expressions.dart';
 import 'formula_store.dart';
 
 class DoseCalculator {
-  // Calculate doses for a specific drug and weight
+  // Calculate doses for a specific drug and weight, categorized by category and drug name
   Future<Map<String, double>> calculateDoses(
-      String drugName, double weight) async {
-    final formulaData = FormulaStore.getFormula(drugName);
+      String category, String drugName, double weight) async {
+    final formulaData = FormulaStore.getFormula(category, drugName);
     if (formulaData == null || !formulaData.containsKey("formulas")) {
       return {};
     }

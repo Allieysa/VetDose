@@ -86,9 +86,9 @@ class _PremedDetailedState extends State<PremedDetailed> {
                 crossAxisSpacing: 6,
                 mainAxisSpacing: 6,
                 children: [
-                  _buildDynamicProtocolCard('Tramadol'),
-                  _buildDynamicProtocolCard('Atropine'),
-                  _buildDynamicProtocolCard('Midazolam'),
+                  _buildDynamicProtocolCard('Premed', 'Tramadol'),
+                  _buildDynamicProtocolCard('Premed', 'Atropine'),
+                  _buildDynamicProtocolCard('Emergency', 'Midazolam'),
                   // Add more protocol cards as needed
                 ],
               ),
@@ -99,10 +99,10 @@ class _PremedDetailedState extends State<PremedDetailed> {
     );
   }
 
-  Widget _buildDynamicProtocolCard(String drugName) {
+  Widget _buildDynamicProtocolCard(String category, String drugName) {
     return FutureBuilder<Map<String, double>>(
       future: doseCalculator.calculateDoses(
-          drugName, animalWeightKg), // Use DoseCalculator
+          category, drugName, animalWeightKg), // Pass category
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Center(child: CircularProgressIndicator());
@@ -133,30 +133,29 @@ class _PremedDetailedState extends State<PremedDetailed> {
                 Text(
                   drugName,
                   style: const TextStyle(
-                      fontWeight: FontWeight.bold, fontSize: 18),
+                    fontWeight: FontWeight.bold,
+                    fontSize: 18,
+                  ),
                 ),
                 const SizedBox(height: 16),
                 for (var doseEntry in doses.entries)
                   Padding(
                     padding: const EdgeInsets.only(bottom: 8.0),
                     child: Container(
-                      width: double
-                          .infinity, // Ensures the container fills the card
+                      width: double.infinity,
                       padding: const EdgeInsets.all(16.0),
                       decoration: BoxDecoration(
-                        color: Colors
-                            .blue.shade100, // Background color for the box
-                        borderRadius:
-                            BorderRadius.circular(8), // Rounded corners
+                        color: Colors.blue.shade100,
+                        borderRadius: BorderRadius.circular(8),
                       ),
                       child: Text(
                         '${doseEntry.key}: ${doseEntry.value.toStringAsFixed(2)} mg',
                         style: const TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
-                          color: Colors.black87, // Text color
+                          color: Colors.black87,
                         ),
-                        textAlign: TextAlign.center, // Center the text
+                        textAlign: TextAlign.center,
                       ),
                     ),
                   ),
@@ -164,7 +163,6 @@ class _PremedDetailedState extends State<PremedDetailed> {
             ),
           ),
         );
-
       },
     );
   }
