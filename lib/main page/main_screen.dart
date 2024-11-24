@@ -110,7 +110,11 @@ class _MainScreenState extends State<MainScreen> {
                 _buildProtocolItem('Pre-med', category: 'Premed'),
                 _buildProtocolItem('Emergency', category: 'Emergency'),
                 _buildProtocolItem('Induction', category: 'Induction'),
-                // Add more categories here as needed
+                _buildProtocolItem('Intubation', category: 'Intubation'),
+                _buildProtocolItem('Local block', category: 'Local block'),
+                _buildProtocolItem('Fluid rate', category: 'Fluid rate'),
+                _buildProtocolItem('Inotropic', category: 'Inotropic'),
+                _buildProtocolItem('Maintenance', category: 'Maintenance'),
               ],
             ),
           ),

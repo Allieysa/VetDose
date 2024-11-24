@@ -1,5 +1,6 @@
 import 'package:expressions/expressions.dart';
 import 'formula_store.dart';
+import 'dart:math';
 
 class DoseCalculator {
   // Calculate doses for a specific drug and weight, categorized by category and drug name
@@ -21,7 +22,8 @@ class DoseCalculator {
         try {
           final Expression expression = Expression.parse(formula);
           final evaluator = const ExpressionEvaluator();
-          final result = evaluator.eval(expression, {});
+          final context = {'sqrt': sqrt}; // Include sqrt function
+          final result = evaluator.eval(expression, context);
           calculatedDoses[doseKey] = double.parse(result.toString());
         } catch (e) {
           print("Error evaluating formula for $doseKey: $e");
