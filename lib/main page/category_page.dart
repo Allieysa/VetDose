@@ -145,7 +145,8 @@ class _CategoryPageState extends State<CategoryPage> {
                                     vertical: 12, horizontal: 12),
                                 margin: const EdgeInsets.only(top: 8),
                                 decoration: BoxDecoration(
-                                  color: Colors.blue.shade100,
+                                  color:
+                                      const Color.fromARGB(113, 164, 252, 237),
                                   borderRadius: BorderRadius.circular(8),
                                 ),
                                 child: Center(

@@ -1,5 +1,3 @@
-// ignore_for_file: use_key_in_widget_constructors, prefer_const_constructors, library_private_types_in_public_api, prefer_const_literals_to_create_immutables, use_build_context_synchronously
-
 import 'package:flutter/material.dart';
 import 'controller.dart';
 import 'package:vetdose/bottom_nav_bar.dart';
@@ -14,6 +12,7 @@ class MainScreen extends StatefulWidget {
 class _MainScreenState extends State<MainScreen> {
   final Controller controller = Controller();
   int _currentIndex = 2; // Default to Home
+  DateTime? lastBackPressTime; // For double back to exit
 
   void _onTabTapped(int index) {
     setState(() {
@@ -24,105 +23,128 @@ class _MainScreenState extends State<MainScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Row(
-          children: [
-            Text(
-              'Hello Allieysa!',
-              style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold),
+    return WillPopScope(
+      onWillPop: () async {
+        // Handle double back to exit
+        final now = DateTime.now();
+
+        if (lastBackPressTime == null ||
+            now.difference(lastBackPressTime!) > Duration(seconds: 2)) {
+          lastBackPressTime = now;
+
+          // Show a snackbar to notify the user
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('Press back again to exit'),
+              duration: Duration(seconds: 2),
             ),
-          ],
-        ),
-        centerTitle: false, // Ensure the title is not centered
-        automaticallyImplyLeading: false, // Remove the back button arrow
-      ),
-      body: Column(
-        children: [
-          Text(
-            'This dosage is only for:',
-            style: TextStyle(fontSize: 11),
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
+          );
+
+          return false; // Prevent exiting the app
+        }
+
+        return true; // Allow exiting the app
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          title: Row(
             children: [
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: CircleAvatar(
-                  radius: 40, // Fixed size for simplicity
-                  backgroundImage: AssetImage('assets/cat.png'), // Cat logo
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: CircleAvatar(
-                  radius: 40, // Fixed size for simplicity
-                  backgroundImage: AssetImage('assets/dog.png'), // Dog logo
-                ),
+              Text(
+                'Hello Allieysa!',
+                style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold),
               ),
             ],
           ),
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 10.0),
-            child: ValueListenableBuilder<bool>(
-              valueListenable: controller.isKgNotifier,
-              builder: (context, isKg, child) {
-                return Container(
-                  width: 300, // Adjust size as needed
-                  height: 60, // Adjust height for a better appearance
-                  padding: EdgeInsets.symmetric(horizontal: 16),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(10),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.grey.withOpacity(0.5),
-                        spreadRadius: 1,
-                        blurRadius: 5,
-                        offset: Offset(0, 3),
-                      ),
-                    ],
-                  ),
-                  child: TextField(
-                    controller: controller.weightController,
-                    decoration: InputDecoration(
-                      labelText: 'Enter weight',
-                      floatingLabelBehavior:
-                          FloatingLabelBehavior.auto, // Floating label behavior
-                      labelStyle: TextStyle(
-                        color: Colors.grey, // Label color when inactive
-                      ),
-                      border: InputBorder.none, // Keeps the clean box design
-                      suffix: Text(
-                        isKg ? 'kg' : 'lbs', // Keeps the toggle functionality
-                        style: TextStyle(color: Colors.grey),
-                      ),
-                    ),
-                    keyboardType: TextInputType.number,
-                  ),
-                );
-              },
+          centerTitle: false, // Ensure the title is not centered
+          automaticallyImplyLeading: false, // Remove the back button arrow
+        ),
+        body: Column(
+          children: [
+            Text(
+              'This dosage is only for:',
+              style: TextStyle(fontSize: 11),
             ),
-          ),
-          Expanded(
-            child: ListView(
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                _buildProtocolItem('Pre-med', category: 'Premed'),
-                _buildProtocolItem('Emergency', category: 'Emergency'),
-                _buildProtocolItem('Induction', category: 'Induction'),
-                _buildProtocolItem('Intubation', category: 'Intubation'),
-                _buildProtocolItem('Local block', category: 'Local block'),
-                _buildProtocolItem('Fluid rate', category: 'Fluid rate'),
-                _buildProtocolItem('Inotropic', category: 'Inotropic'),
-                _buildProtocolItem('Maintenance', category: 'Maintenance'),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: CircleAvatar(
+                    radius: 40, // Fixed size for simplicity
+                    backgroundImage: AssetImage('assets/cat.png'), // Cat logo
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: CircleAvatar(
+                    radius: 40, // Fixed size for simplicity
+                    backgroundImage: AssetImage('assets/dog.png'), // Dog logo
+                  ),
+                ),
               ],
             ),
-          ),
-          BottomNavBar(
-            currentIndex: _currentIndex,
-            onTap: _onTabTapped,
-          ),
-        ],
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 10.0),
+              child: ValueListenableBuilder<bool>(
+                valueListenable: controller.isKgNotifier,
+                builder: (context, isKg, child) {
+                  return Container(
+                    width: 300, // Adjust size as needed
+                    height: 60, // Adjust height for a better appearance
+                    padding: EdgeInsets.symmetric(horizontal: 16),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(10),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.grey.withOpacity(0.5),
+                          spreadRadius: 1,
+                          blurRadius: 5,
+                          offset: Offset(0, 3),
+                        ),
+                      ],
+                    ),
+                    child: TextField(
+                      controller: controller.weightController,
+                      decoration: InputDecoration(
+                        labelText: 'Enter weight',
+                        floatingLabelBehavior: FloatingLabelBehavior
+                            .auto, // Floating label behavior
+                        labelStyle: TextStyle(
+                          color: Colors.grey, // Label color when inactive
+                        ),
+                        border: InputBorder.none, // Keeps the clean box design
+                        suffix: Text(
+                          isKg ? 'kg' : 'lbs', // Keeps the toggle functionality
+                          style: TextStyle(color: Colors.grey),
+                        ),
+                      ),
+                      keyboardType: TextInputType.number,
+                    ),
+                  );
+                },
+              ),
+            ),
+            Expanded(
+              child: ListView(
+                children: [
+                  _buildProtocolItem('Pre-med', category: 'Premed'),
+                  _buildProtocolItem('Emergency', category: 'Emergency'),
+                  _buildProtocolItem('Induction', category: 'Induction'),
+                  _buildProtocolItem('Intubation', category: 'Intubation'),
+                  _buildProtocolItem('Local block', category: 'Local block'),
+                  _buildProtocolItem('Fluid rate', category: 'Fluid rate'),
+                  _buildProtocolItem('Inotropic', category: 'Inotropic'),
+                  _buildProtocolItem('Maintenance', category: 'Maintenance'),
+                ],
+              ),
+            ),
+            BottomNavBar(
+              currentIndex: _currentIndex,
+              onTap: _onTabTapped,
+            ),
+          ],
+        ),
       ),
     );
   }

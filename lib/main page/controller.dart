@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:vetdose/drug screen/drugs_screen.dart';
 import 'package:vetdose/main page/main_screen.dart';
-import 'package:vetdose/calculator screen/calculator_screen.dart'; // Import the calculator screen
+import 'package:vetdose/calculator screen/calculator_screen.dart';
+import 'package:vetdose/converter screen/converter_first_screen.dart';
+import 'package:vetdose/profile%20screen/profile_screen.dart'; 
 
 class Controller {
   final TextEditingController weightController = TextEditingController();
@@ -27,8 +29,11 @@ class Controller {
         );
         break;
       case 1:
-        print('Converter tab selected');
-        // Add navigation to the Converter screen here if needed
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => ConverterScreen(controller: this,)),
+        );
         break;
       case 2:
         Navigator.push(
@@ -44,12 +49,15 @@ class Controller {
           ),
         );
         break;
-      case 4:
-        print('Profile tab selected');
-        // Handle navigation for Profile if needed
+        case 4: // Profile tab
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => ProfileScreen(),
+          ),
+        );
         break;
-      default:
-        break;
+
     }
   }
 }

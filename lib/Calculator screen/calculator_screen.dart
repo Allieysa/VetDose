@@ -149,7 +149,7 @@ Expanded(
                     child: CalculatorButton(
                       text: op,
                       onTap: () => onButtonPressed(op),
-                      color: Colors.blue,
+                      color: const Color.fromARGB(158, 141, 239, 231),
                       textColor: Colors.white,
                     ),
                   );

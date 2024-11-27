@@ -1,3 +1,5 @@
+// ignore_for_file: prefer_const_declarations
+
 import 'package:expressions/expressions.dart';
 import 'formula_store.dart';
 import 'dart:math';
