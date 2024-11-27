@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart'; // Import FirebaseAuth
 import 'controller.dart';
 import 'package:vetdose/bottom_nav_bar.dart';
-import 'package:vetdose/main%20page/premed_page.dart';
-import 'package:vetdose/main%20page/category_page.dart';
+import 'package:vetdose/main%20page/category_page.dart'; 
 
 class MainScreen extends StatefulWidget {
   @override
@@ -13,6 +13,8 @@ class _MainScreenState extends State<MainScreen> {
   final Controller controller = Controller();
   int _currentIndex = 2; // Default to Home
   DateTime? lastBackPressTime; // For double back to exit
+
+  User? currentUser = FirebaseAuth.instance.currentUser; // Get the current user
 
   void _onTabTapped(int index) {
     setState(() {
@@ -50,7 +52,7 @@ class _MainScreenState extends State<MainScreen> {
           title: Row(
             children: [
               Text(
-                'Hello Allieysa!',
+                'Hello, ${currentUser?.displayName ?? 'User'}!',
                 style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold),
               ),
             ],
@@ -108,8 +110,7 @@ class _MainScreenState extends State<MainScreen> {
                       controller: controller.weightController,
                       decoration: InputDecoration(
                         labelText: 'Enter weight',
-                        floatingLabelBehavior: FloatingLabelBehavior
-                            .auto, // Floating label behavior
+                        floatingLabelBehavior: FloatingLabelBehavior.auto,
                         labelStyle: TextStyle(
                           color: Colors.grey, // Label color when inactive
                         ),
@@ -149,7 +150,7 @@ class _MainScreenState extends State<MainScreen> {
     );
   }
 
-  Widget _buildProtocolItem(String title, {String? category}) {
+  Widget _buildProtocolItem(String title, {required String category}) {
     return ListTile(
       title: Text(title),
       trailing: Icon(Icons.arrow_forward),
@@ -157,34 +158,16 @@ class _MainScreenState extends State<MainScreen> {
         final double weightKg =
             double.tryParse(controller.weightController.text) ?? 0.0;
 
-        if (title == 'Pre') {
-          // Navigate to PremedDetailed and pass the weight
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => PremedDetailed(
-                title: title,
-                initialWeightKg: weightKg,
-              ),
+        // Navigate to CategoryPage for all categories
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => CategoryPage(
+              category: category,
+              weightKg: weightKg,
             ),
-          );
-        } else if (category != null) {
-          // Navigate to CategoryPage for other categories
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => CategoryPage(
-                category: category,
-                weightKg: weightKg,
-              ),
-            ),
-          );
-        } else {
-          // Handle error or unknown category
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text("Page for $title is not available.")),
-          );
-        }
+          ),
+        );
       },
     );
   }

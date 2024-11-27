@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:vetdose/login_screen.dart';
 
 class ProfileScreen extends StatelessWidget {
+  final User? currentUser =
+      FirebaseAuth.instance.currentUser; // Get current user
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -40,13 +45,18 @@ class ProfileScreen extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'User Name',
+                        currentUser?.displayName ?? 'User Name',
                         style: TextStyle(
-                            fontSize: 18, fontWeight: FontWeight.bold),
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                       Text(
-                        'user@example.com',
-                        style: TextStyle(fontSize: 14, color: Colors.grey[700]),
+                        currentUser?.email ?? 'user@example.com',
+                        style: TextStyle(
+                          fontSize: 14,
+                          color: Colors.grey[700],
+                        ),
                       ),
                     ],
                   ),
@@ -123,8 +133,41 @@ class ProfileScreen extends StatelessWidget {
             ListTile(
               title: Text('Sign Out'),
               trailing: Icon(Icons.exit_to_app),
-              onTap: () {
-                // Handle sign out functionality
+              onTap: () async {
+                // Show confirmation dialog
+                bool? shouldSignOut = await showDialog(
+                  context: context,
+                  builder: (context) => AlertDialog(
+                    title: Text('Log Out'),
+                    content: Text('Are you sure you want to log out?'),
+                    actions: [
+                      TextButton(
+                        onPressed: () {
+                          Navigator.pop(context, false); // Cancel log out
+                        },
+                        child: Text('Cancel'),
+                      ),
+                      TextButton(
+                        onPressed: () {
+                          Navigator.pop(context, true); // Confirm log out
+                        },
+                        child: Text('Yes'),
+                      ),
+                    ],
+                  ),
+                );
+
+                // Perform sign out if the user confirms
+                if (shouldSignOut == true) {
+                  await FirebaseAuth.instance
+                      .signOut(); // Sign out from Firebase
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) =>
+                            LoginScreen()), // Navigate to LoginScreen
+                  );
+                }
               },
             ),
           ],

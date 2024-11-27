@@ -22,7 +22,7 @@ class _CalculatorScreenState extends State<CalculatorScreen>
   bool isResultShown = false;
 
   // Method to handle button press
- void onButtonPressed(String value) {
+  void onButtonPressed(String value) {
     setState(() {
       if (value == 'C') {
         input = '';
@@ -83,12 +83,12 @@ class _CalculatorScreenState extends State<CalculatorScreen>
           widget.controller.onTabTapped(index, context);
         },
       ),
-body: Padding(
-  padding: const EdgeInsets.all(16.0),
-  child: Column(
-    crossAxisAlignment: CrossAxisAlignment.stretch,
-    children: [
-Expanded(
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.end,
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -96,7 +96,7 @@ Expanded(
                   AnimatedSwitcher(
                     duration: const Duration(
                         milliseconds: 500), // Adjust duration for smoothness
-                        transitionBuilder:
+                    transitionBuilder:
                         (Widget child, Animation<double> animation) {
                       return FadeScaleTransition(
                           animation: animation, child: child);
@@ -119,49 +119,51 @@ Expanded(
                 ],
               ),
             ),
-      // The remaining Expanded widget for the buttons
-      Expanded(
-        flex: 3,
-        child: Row(
-          children: [
+            // The remaining Expanded widget for the buttons
             Expanded(
               flex: 3,
-              child: GridView.builder(
-                itemCount: buttons.length,
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 3,
-                  childAspectRatio: 1.2,
-                ),
-                itemBuilder: (context, index) {
-                  return CalculatorButton(
-                    text: buttons[index],
-                    onTap: () => onButtonPressed(buttons[index]),
-                    color: buttons[index] == 'C' ? Colors.grey : Colors.white,
-                    textColor: Colors.black,
-                  );
-                },
-              ),
-            ),
-            Expanded(
-              child: Column(
-                children: operators.map((op) {
-                  return Expanded(
-                    child: CalculatorButton(
-                      text: op,
-                      onTap: () => onButtonPressed(op),
-                      color: const Color.fromARGB(158, 141, 239, 231),
-                      textColor: Colors.white,
+              child: Row(
+                children: [
+                  Expanded(
+                    flex: 3,
+                    child: GridView.builder(
+                      itemCount: buttons.length,
+                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 3,
+                        childAspectRatio: 1.2,
+                      ),
+                      itemBuilder: (context, index) {
+                        return CalculatorButton(
+                          text: buttons[index],
+                          onTap: () => onButtonPressed(buttons[index]),
+                          color: buttons[index] == 'C'
+                              ? Colors.grey
+                              : Colors.white,
+                          textColor: Colors.black,
+                        );
+                      },
                     ),
-                  );
-                }).toList(),
+                  ),
+                  Expanded(
+                    child: Column(
+                      children: operators.map((op) {
+                        return Expanded(
+                          child: CalculatorButton(
+                            text: op,
+                            onTap: () => onButtonPressed(op),
+                            color: const Color.fromARGB(222, 108, 159, 150),
+                            textColor: Colors.white,
+                          ),
+                        );
+                      }).toList(),
+                    ),
+                  ),
+                ],
               ),
             ),
           ],
         ),
       ),
-    ],
-  ),
-),
     );
   }
 }

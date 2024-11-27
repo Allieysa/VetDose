@@ -21,7 +21,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: const Color.fromARGB(255, 179, 217, 236),
+        color: const Color.fromARGB(113, 164, 252, 237),
         borderRadius:
             BorderRadius.vertical(top: Radius.circular(20)), // Rounded corners
       ),
@@ -58,7 +58,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
               child: Icon(
                 _getIconForIndex(index),
                 color: isSelected
-                    ? const Color.fromARGB(255, 29, 48, 6)
+                    ? const Color.fromARGB(222, 108, 159, 150)
                     : Colors.grey, // Change color based on selection
               ),
             ),
@@ -67,7 +67,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
               _getLabelForIndex(index),
               style: TextStyle(
                 color: isSelected
-                    ? Colors.red
+                    ? const Color.fromARGB(222, 108, 159, 150)
                     : Colors.grey, // Change label color based on selection
               ),
             ),
