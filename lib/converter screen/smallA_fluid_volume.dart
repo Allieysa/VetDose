@@ -9,40 +9,51 @@ class _FluidVolumePageState extends State<FluidVolumePage> {
   final TextEditingController weightController = TextEditingController();
   final TextEditingController dehydrationController = TextEditingController();
   final TextEditingController diuresisRateController = TextEditingController();
+  final TextEditingController fluidLossController = TextEditingController();
 
-  double totalFluidRequirement = 0.0;
-  double maintenanceOnlyMicrodrip = 0.0;
-  double infusionPumpRate = 0.0;
-  double microdripMorningRate = 0.0;
-  double microdripNightRate = 0.0;
+  double totalFluidRequirementDog = 0.0;
+  double totalFluidRequirementCat = 0.0;
+  double maintenanceOnlyMacrodripDog = 0.0;
+  double maintenanceOnlyMicrodripCat = 0.0;
+  double infusionPumpRateDog = 0.0;
+  double infusionPumpRateCat = 0.0;
+  double microdripMorningRateCat = 0.0;
+  double microdripNightRateCat = 0.0;
 
   void calculate() {
     double weight = double.tryParse(weightController.text) ?? 0.0;
     double dehydration = double.tryParse(dehydrationController.text) ?? 0.0;
     double diuresisRate = double.tryParse(diuresisRateController.text) ?? 0.0;
+    double fluidLoss = double.tryParse(fluidLossController.text) ?? 0.0;
 
-    // Maintenance volume (Small dog/cat)
-    double maintenanceVolume = weight * 60;
+    // Maintenance volume
+    double maintenanceVolumeDog = weight * 40;
+    double maintenanceVolumeCat = weight * 60;
+
+    // Diuresis rate
+    double diuresisVolumeDog = diuresisRate * maintenanceVolumeDog;
+    double diuresisVolumeCat = diuresisRate * maintenanceVolumeCat;
 
     // Dehydration (mL)
     double dehydrationVolume = weight * dehydration * 10;
 
-    // Diuresis rate
-    double diuresisVolume = diuresisRate * 300;
-
     // Total fluid requirement
-    totalFluidRequirement =
-        maintenanceVolume + dehydrationVolume + diuresisVolume;
+    totalFluidRequirementDog =
+        dehydrationVolume + fluidLoss + diuresisVolumeDog;
+    totalFluidRequirementCat =
+        dehydrationVolume + fluidLoss + diuresisVolumeCat;
 
-    // Maintenance only microdrip
-    maintenanceOnlyMicrodrip = maintenanceVolume / 5;
+    // Maintenance only Microdrip
+    maintenanceOnlyMacrodripDog = (totalFluidRequirementDog / 24) / 3;
+    maintenanceOnlyMicrodripCat = totalFluidRequirementCat / 14;
 
-    // Infusion pump rate (24 hours)
-    infusionPumpRate = totalFluidRequirement / 24;
+    // Infusion pump rate
+    infusionPumpRateDog = totalFluidRequirementDog / 24;
+    infusionPumpRateCat = totalFluidRequirementCat / 24;
 
-    // Microdrip rates (morning and night)
-    microdripMorningRate = infusionPumpRate / 2.1;
-    microdripNightRate = infusionPumpRate / 4.0;
+    // Microdrip rates (cat only)
+    microdripMorningRateCat = ((totalFluidRequirementCat - 150) / 14);
+    microdripNightRateCat = 15;
 
     setState(() {});
   }
@@ -86,6 +97,15 @@ class _FluidVolumePageState extends State<FluidVolumePage> {
                   border: OutlineInputBorder(),
                 ),
               ),
+              SizedBox(height: 10),
+              TextField(
+                controller: fluidLossController,
+                keyboardType: TextInputType.number,
+                decoration: InputDecoration(
+                  labelText: 'Fluid Loss',
+                  border: OutlineInputBorder(),
+                ),
+              ),
               SizedBox(height: 20),
               ElevatedButton(
                 onPressed: calculate,
@@ -93,19 +113,30 @@ class _FluidVolumePageState extends State<FluidVolumePage> {
               ),
               SizedBox(height: 20),
               Text(
-                'Results:',
+                'Results for Dogs:',
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
               Text(
-                  'Total Fluid Requirement: ${totalFluidRequirement.toStringAsFixed(2)} mL/day'),
+                  'Total Fluid Requirement: ${totalFluidRequirementDog.toStringAsFixed(2)} mL/day'),
               Text(
-                  'Maintenance Only Microdrip: ${maintenanceOnlyMicrodrip.toStringAsFixed(2)} drops/sec'),
+                  'Maintenance Only Macrodrip: ${maintenanceOnlyMacrodripDog.toStringAsFixed(2)} drops/min'),
               Text(
-                  'Infusion Pump Rate (24 hrs): ${infusionPumpRate.toStringAsFixed(2)} mL/hr'),
+                  'Infusion Pump Rate (24 hrs): ${infusionPumpRateDog.toStringAsFixed(2)} mL/hr'),
+              SizedBox(height: 20),
               Text(
-                  'Microdrip Morning Rate: ${microdripMorningRate.toStringAsFixed(2)} drops/sec'),
+                'Results for Cats:',
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              ),
               Text(
-                  'Microdrip Night Rate: ${microdripNightRate.toStringAsFixed(2)} drops/sec'),
+                  'Total Fluid Requirement: ${totalFluidRequirementCat.toStringAsFixed(2)} mL/day'),
+              Text(
+                  'Maintenance Only Microdrip: ${maintenanceOnlyMicrodripCat.toStringAsFixed(2)} drops/min'),
+              Text(
+                  'Infusion Pump Rate (24 hrs): ${infusionPumpRateCat.toStringAsFixed(2)} mL/hr'),
+              Text(
+                  'Microdrip Morning Rate: ${microdripMorningRateCat.toStringAsFixed(2)} drops/min'),
+              Text(
+                  'Microdrip Night Rate: ${microdripNightRateCat.toStringAsFixed(2)} drops/min'),
             ],
           ),
         ),

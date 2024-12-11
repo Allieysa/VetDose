@@ -15,16 +15,14 @@ class CalculatorScreen extends StatefulWidget {
   _CalculatorScreenState createState() => _CalculatorScreenState();
 }
 
-class _CalculatorScreenState extends State<CalculatorScreen>
-    with SingleTickerProviderStateMixin {
+class _CalculatorScreenState extends State<CalculatorScreen> {
   String input = '';
   String result = '0';
   bool isResultShown = false;
 
-  // Method to handle button press
   void onButtonPressed(String value) {
     setState(() {
-      if (value == 'C') {
+      if (value == 'AC') {
         input = '';
         result = '0';
         isResultShown = false;
@@ -40,11 +38,9 @@ class _CalculatorScreenState extends State<CalculatorScreen>
         }
       } else {
         if (isResultShown && "+-×÷".contains(value)) {
-          // Start new operation using the last result as the base
           input = result + value;
           isResultShown = false;
         } else if (isResultShown) {
-          // If result is shown, start fresh with the new input
           input = value;
           isResultShown = false;
         } else {
@@ -66,7 +62,7 @@ class _CalculatorScreenState extends State<CalculatorScreen>
       if (eval == eval.toInt()) {
         return eval.toInt().toString();
       } else {
-        return eval.toStringAsPrecision(12);
+        return eval.toStringAsFixed(6);
       }
     } catch (e) {
       return 'Error';
@@ -76,97 +72,126 @@ class _CalculatorScreenState extends State<CalculatorScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Calculator')),
+      appBar: AppBar(
+        title: Text('Calculator'),
+        centerTitle: true,
+      ),
       bottomNavigationBar: BottomNavBar(
         currentIndex: 3,
         onTap: (index) {
           widget.controller.onTabTapped(index, context);
         },
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Expanded(
+      body: Column(
+        children: [
+// Result and Input Display
+          Expanded(
+            flex: 2,
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.end,
+                crossAxisAlignment:
+                    CrossAxisAlignment.stretch, // Stretch to full width
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  AnimatedSwitcher(
-                    duration: const Duration(
-                        milliseconds: 500), // Adjust duration for smoothness
-                    transitionBuilder:
-                        (Widget child, Animation<double> animation) {
-                      return FadeScaleTransition(
-                          animation: animation, child: child);
-                    },
-                    child: isResultShown
-                        ? Text(
-                            result,
-                            key: ValueKey(result), // Unique key for switching
-                            style: TextStyle(
-                                fontSize: 48, fontWeight: FontWeight.bold),
-                          )
-                        : SizedBox
-                            .shrink(), // Empty widget when result is hidden
-                  ),
-                  SizedBox(height: 8),
-                  Text(
-                    input,
-                    style: TextStyle(fontSize: 24, color: Colors.black54),
-                  ),
-                ],
-              ),
-            ),
-            // The remaining Expanded widget for the buttons
-            Expanded(
-              flex: 3,
-              child: Row(
-                children: [
-                  Expanded(
-                    flex: 3,
-                    child: GridView.builder(
-                      itemCount: buttons.length,
-                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 3,
-                        childAspectRatio: 1.2,
+                  Align(
+                    alignment:
+                        Alignment.centerRight, // Ensure alignment to the right
+                    child: SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      reverse: true, // Ensure it starts at the right side
+                      child: Text(
+                        result,
+                        textAlign: TextAlign.right, // Align text to the right
+                        style: TextStyle(
+                            fontSize: 48, fontWeight: FontWeight.bold),
                       ),
-                      itemBuilder: (context, index) {
-                        return CalculatorButton(
-                          text: buttons[index],
-                          onTap: () => onButtonPressed(buttons[index]),
-                          color: buttons[index] == 'C'
-                              ? Colors.grey
-                              : Colors.white,
-                          textColor: Colors.black,
-                        );
-                      },
                     ),
                   ),
-                  Expanded(
-                    child: Column(
-                      children: operators.map((op) {
-                        return Expanded(
-                          child: CalculatorButton(
-                            text: op,
-                            onTap: () => onButtonPressed(op),
-                            color: const Color.fromARGB(222, 108, 159, 150),
-                            textColor: Colors.white,
-                          ),
-                        );
-                      }).toList(),
+                  SizedBox(height: 10),
+                  Align(
+                    alignment:
+                        Alignment.centerRight, // Ensure alignment to the right
+                    child: SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      reverse: true, // Ensure input starts at the right side
+                      child: Text(
+                        input,
+                        textAlign: TextAlign.right, // Align text to the right
+                        style: TextStyle(fontSize: 24, color: Colors.black54),
+                      ),
                     ),
                   ),
                 ],
               ),
             ),
-          ],
-        ),
+          ),
+          // Number Pad
+          Expanded(
+            flex: 4,
+            child: GridView.builder(
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 4,
+                mainAxisSpacing: 8.0,
+                crossAxisSpacing: 8.0,
+                childAspectRatio: 1.2, // Adjust button size
+              ),
+              itemCount: arrangedButtons.length,
+              itemBuilder: (context, index) {
+                final button = arrangedButtons[index];
+                final isOperator = operators.contains(button);
+
+                return CalculatorButton(
+                  text: button,
+                  onTap: () => onButtonPressed(button),
+                  color: isOperator
+                      ? const Color.fromARGB(200, 157, 224, 207)
+                      : button == 'AC'
+                          ? const Color.fromARGB(255, 137, 233, 202)
+                          : Colors.white,
+                  textColor: isOperator || button == 'AC'
+                      ? Colors.white
+                      : Colors.black,
+                );
+              },
+            ),
+          ),
+        ],
       ),
     );
   }
 }
+
+const List<String> arrangedButtons = [
+  'AC',
+  '⌫',
+  '±',
+  '÷',
+  '7',
+  '8',
+  '9',
+  '×',
+  '4',
+  '5',
+  '6',
+  '-',
+  '1',
+  '2',
+  '3',
+  '+',
+  '%',
+  '0',
+  '.',
+  '=',
+];
+
+const List<String> operators = [
+  '÷',
+  '×',
+  '-',
+  '+',
+  '=',
+];
 
 class CalculatorButton extends StatelessWidget {
   final String text;
@@ -201,29 +226,3 @@ class CalculatorButton extends StatelessWidget {
     );
   }
 }
-
-const List<String> buttons = [
-  'C',
-  '±',
-  '%',
-  '7',
-  '8',
-  '9',
-  '4',
-  '5',
-  '6',
-  '1',
-  '2',
-  '3',
-  '.',
-  '0',
-  '⌫',
-];
-
-const List<String> operators = [
-  '÷',
-  '×',
-  '-',
-  '+',
-  '=',
-];
