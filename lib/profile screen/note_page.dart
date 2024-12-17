@@ -144,8 +144,6 @@ class _NotePageState extends State<NotePage> {
 
   @override
   Widget build(BuildContext context) {
-    String userId = _auth.currentUser!.uid;
-
     return Scaffold(
       appBar: AppBar(
         title: !isSearching

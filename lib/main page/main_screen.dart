@@ -2,9 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart'; // Import FirebaseAuth
 import 'controller.dart';
 import 'package:vetdose/bottom_nav_bar.dart';
-import 'package:vetdose/main%20page/category_page.dart'; 
+import 'package:vetdose/main%20page/category_page.dart';
+import 'package:vetdose/profile screen/add_patient_dialog';
 
 class MainScreen extends StatefulWidget {
+  final bool showWelcome; // New flag to trigger the dialog
+  const MainScreen({Key? key, this.showWelcome = false}) : super(key: key);
+
   @override
   _MainScreenState createState() => _MainScreenState();
 }
@@ -15,6 +19,49 @@ class _MainScreenState extends State<MainScreen> {
   DateTime? lastBackPressTime; // For double back to exit
 
   User? currentUser = FirebaseAuth.instance.currentUser; // Get the current user
+
+  @override
+  void initState() {
+    super.initState();
+    // Schedule the dialog to appear after the first frame
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (widget.showWelcome) {
+        _showWelcomeDialog();
+      }
+    });
+  }
+
+  void _showWelcomeDialog() {
+    String username =
+        currentUser?.displayName ?? currentUser?.email?.split('@')[0] ?? 'User';
+    showDialog(
+      context: context,
+      barrierDismissible: false, // Prevent dismissing the dialog accidentally
+      builder: (context) {
+        return AlertDialog(
+          title: Text('Hello, $username!'),
+          content: Text('Welcome to the app. What would you like to do?'),
+          actions: [
+            ElevatedButton(
+              onPressed: () {
+                Navigator.pop(context); // Close the dialog
+              },
+              child: Text('Close'),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.pop(context); // Close the welcome dialog
+                showAddPatientDialog(context, () {
+                  setState(() {}); // Refresh UI if needed
+                });
+              },
+              child: Text('Add Patient'),
+            ),
+          ],
+        );
+      },
+    );
+  }
 
   void _onTabTapped(int index) {
     setState(() {
@@ -57,8 +104,8 @@ class _MainScreenState extends State<MainScreen> {
               ),
             ],
           ),
-          centerTitle: false, // Ensure the title is not centered
-          automaticallyImplyLeading: false, // Remove the back button arrow
+          centerTitle: false,
+          automaticallyImplyLeading: false,
         ),
         body: Column(
           children: [
@@ -72,15 +119,15 @@ class _MainScreenState extends State<MainScreen> {
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: CircleAvatar(
-                    radius: 40, // Fixed size for simplicity
-                    backgroundImage: AssetImage('assets/cat.png'), // Cat logo
+                    radius: 40,
+                    backgroundImage: AssetImage('assets/cat.png'),
                   ),
                 ),
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: CircleAvatar(
-                    radius: 40, // Fixed size for simplicity
-                    backgroundImage: AssetImage('assets/dog.png'), // Dog logo
+                    radius: 40,
+                    backgroundImage: AssetImage('assets/dog.png'),
                   ),
                 ),
               ],
@@ -91,8 +138,8 @@ class _MainScreenState extends State<MainScreen> {
                 valueListenable: controller.isKgNotifier,
                 builder: (context, isKg, child) {
                   return Container(
-                    width: 300, // Adjust size as needed
-                    height: 60, // Adjust height for a better appearance
+                    width: 300,
+                    height: 60,
                     padding: EdgeInsets.symmetric(horizontal: 16),
                     decoration: BoxDecoration(
                       color: Colors.white,
@@ -112,11 +159,11 @@ class _MainScreenState extends State<MainScreen> {
                         labelText: 'Enter weight',
                         floatingLabelBehavior: FloatingLabelBehavior.auto,
                         labelStyle: TextStyle(
-                          color: Colors.grey, // Label color when inactive
+                          color: Colors.grey,
                         ),
-                        border: InputBorder.none, // Keeps the clean box design
+                        border: InputBorder.none,
                         suffix: Text(
-                          isKg ? 'kg' : 'lbs', // Keeps the toggle functionality
+                          isKg ? 'kg' : 'lbs',
                           style: TextStyle(color: Colors.grey),
                         ),
                       ),
@@ -158,7 +205,6 @@ class _MainScreenState extends State<MainScreen> {
         final double weightKg =
             double.tryParse(controller.weightController.text) ?? 0.0;
 
-        // Navigate to CategoryPage for all categories
         Navigator.push(
           context,
           MaterialPageRoute(

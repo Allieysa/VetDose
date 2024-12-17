@@ -2,8 +2,8 @@
 
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:vetdose/main%20page/main_screen.dart';
 import 'signup_screen.dart';
-import 'main page/main_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -34,7 +34,10 @@ class _LoginScreenState extends State<LoginScreen> {
       // If sign-in is successful, navigate to the main screen
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => MainScreen()),
+        MaterialPageRoute(
+            builder: (context) => MainScreen(
+                  showWelcome: true,
+                )),
       );
     } on FirebaseAuthException catch (e) {
       setState(() {

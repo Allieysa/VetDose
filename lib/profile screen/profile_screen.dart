@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:vetdose/login_screen.dart';
 import 'package:vetdose/profile screen/note_page.dart';
+import 'package:vetdose/profile%20screen/patient_history';
 
 class ProfileScreen extends StatelessWidget {
   final User? currentUser =
@@ -71,7 +72,11 @@ class ProfileScreen extends StatelessWidget {
               title: Text('Patient History'),
               trailing: Icon(Icons.arrow_forward_ios),
               onTap: () {
-                // Handle navigation or functionality
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => PatientHistoryScreen()),
+                );
               },
             ),
             Divider(),
