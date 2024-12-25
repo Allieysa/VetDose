@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:vetdose/converter screen/treatment_button.dart';
 
 class FluidVolumePage extends StatefulWidget {
   @override
@@ -20,7 +21,9 @@ class _FluidVolumePageState extends State<FluidVolumePage> {
   double microdripMorningRateCat = 0.0;
   double microdripNightRateCat = 0.0;
 
-  void calculate() {
+bool showAddTreatmentButton = false; // Show Add Treatment button
+
+  void calculateResults() {
     double weight = double.tryParse(weightController.text) ?? 0.0;
     double dehydration = double.tryParse(dehydrationController.text) ?? 0.0;
     double diuresisRate = double.tryParse(diuresisRateController.text) ?? 0.0;
@@ -54,6 +57,8 @@ class _FluidVolumePageState extends State<FluidVolumePage> {
     // Microdrip rates (cat only)
     microdripMorningRateCat = ((totalFluidRequirementCat - 150) / 14);
     microdripNightRateCat = 15;
+
+    showAddTreatmentButton = true; // Show Add Treatment button
 
     setState(() {});
   }
@@ -108,7 +113,7 @@ class _FluidVolumePageState extends State<FluidVolumePage> {
               ),
               SizedBox(height: 20),
               ElevatedButton(
-                onPressed: calculate,
+                onPressed: calculateResults,
                 child: Text('Calculate'),
               ),
               SizedBox(height: 20),
@@ -137,10 +142,22 @@ class _FluidVolumePageState extends State<FluidVolumePage> {
                   'Microdrip Morning Rate: ${microdripMorningRateCat.toStringAsFixed(2)} drops/min'),
               Text(
                   'Microdrip Night Rate: ${microdripNightRateCat.toStringAsFixed(2)} drops/min'),
+
+                                     SizedBox(height: 16),
+              if (showAddTreatmentButton)
+                AddTreatmentButton(
+                  onTreatmentAdded: () {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text('Treatment process completed.')),
+                    );
+                  },
+                ),
             ],
           ),
+          
         ),
       ),
+      
     );
   }
 }

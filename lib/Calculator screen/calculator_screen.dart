@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:vetdose/main page/controller.dart';
 import 'package:vetdose/bottom_nav_bar.dart';
 import 'package:math_expressions/math_expressions.dart';
-import 'package:animations/animations.dart';
 
 class CalculatorScreen extends StatefulWidget {
   final Controller controller;

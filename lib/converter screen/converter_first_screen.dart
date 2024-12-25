@@ -1,12 +1,35 @@
 import 'package:flutter/material.dart';
-import 'package:vetdose/converter screen/large_animal.dart';
-import 'package:vetdose/converter screen/small_animal.dart';
-import 'package:vetdose/main page/controller.dart';
+import 'package:vetdose/converter%20screen/large_animal.dart';
+import 'package:vetdose/converter%20screen/small_animal.dart';
+import 'package:vetdose/main%20page/controller.dart';
+import 'package:vetdose/bottom_nav_bar.dart'; // Ensure the BottomNavBar is imported correctly
 
-class ConverterScreen extends StatelessWidget {
+class ConverterScreen extends StatefulWidget {
   final Controller controller;
 
   ConverterScreen({required this.controller});
+
+  @override
+  _ConverterScreenState createState() => _ConverterScreenState();
+}
+
+class _ConverterScreenState extends State<ConverterScreen> {
+  int _currentIndex = 1; // Index for the ConverterScreen
+
+  void _onNavBarTap(int index) {
+    setState(() {
+      _currentIndex = index;
+    });
+
+    // Handle navigation based on index
+    if (index == 0) {
+      Navigator.pushNamed(context, '/home'); // Adjust route as needed
+    } else if (index == 1) {
+      // Stay on the ConverterScreen
+    } else if (index == 2) {
+      Navigator.pushNamed(context, '/profile'); // Adjust route as needed
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -93,6 +116,10 @@ class ConverterScreen extends StatelessWidget {
             ),
           ],
         ),
+      ),
+      bottomNavigationBar: BottomNavBar(
+        currentIndex: _currentIndex,
+        onTap: _onNavBarTap,
       ),
     );
   }

@@ -2,12 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart'; // Import FirebaseAuth
 import 'controller.dart';
 import 'package:vetdose/bottom_nav_bar.dart';
-import 'package:vetdose/main%20page/category_page.dart';
-import 'package:vetdose/profile screen/add_patient_dialog';
+import 'package:vetdose/main page/category_page.dart';
+import 'package:vetdose/profile screen/add_patient_dialog.dart';
 
 class MainScreen extends StatefulWidget {
-  final bool showWelcome; // New flag to trigger the dialog
-  const MainScreen({Key? key, this.showWelcome = false}) : super(key: key);
+  final bool showWelcome; // Flag to trigger the welcome dialog
+  final Controller controller; // Controller for shared logic
+
+  const MainScreen({
+    Key? key,
+    required this.controller,
+    this.showWelcome = false, // Default value for showWelcome
+  }) : super(key: key);
 
   @override
   _MainScreenState createState() => _MainScreenState();

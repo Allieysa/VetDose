@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:vetdose/converter screen/treatment_button.dart';
 
 class BloodTransfusionPage extends StatefulWidget {
   @override
@@ -21,7 +22,9 @@ class _BloodTransfusionPageState extends State<BloodTransfusionPage> {
   double totalBloodVolumeDog = 0.0;
   double donorBloodVolume = 0.0;
 
-  void calculate() {
+bool showAddTreatmentButton = false; // Show Add Treatment button
+
+  void calculateResults() {
     double recipientWeight =
         double.tryParse(recipientWeightController.text) ?? 0.0;
     double recipientPCV = double.tryParse(recipientPCVController.text) ?? 0.0;
@@ -46,6 +49,9 @@ class _BloodTransfusionPageState extends State<BloodTransfusionPage> {
     infusionRateFirst15 =
         recipientWeight * 1; // 1 mL/kg/hr for first 15 minutes
     infusionRateAfter = recipientWeight * 10; // 10 mL/kg/hr if no reaction
+
+    showAddTreatmentButton = true; // Show Add Treatment button
+
 
     setState(() {});
   }
@@ -145,7 +151,7 @@ class _BloodTransfusionPageState extends State<BloodTransfusionPage> {
               ),
               SizedBox(height: 20),
               ElevatedButton(
-                onPressed: calculate,
+                onPressed: calculateResults,
                 child: Text('Calculate'),
               ),
               SizedBox(height: 20),
@@ -213,6 +219,15 @@ class _BloodTransfusionPageState extends State<BloodTransfusionPage> {
                   ),
                 ),
               ),
+              SizedBox(height: 16),
+              if (showAddTreatmentButton)
+                AddTreatmentButton(
+                  onTreatmentAdded: () {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text('Treatment process completed.')),
+                    );
+                  },
+                ),
             ],
           ),
         ),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:vetdose/converter screen/treatment_button.dart';
 
 class Dobutamine extends StatefulWidget {
   @override
@@ -10,6 +11,9 @@ class _DobutamineState extends State<Dobutamine> {
   final _weightController = TextEditingController();
   Map<String, double> dobAndNaCl = {};
   List<Map<String, double>> dripRates = [];
+
+  bool showAddTreatmentButton =
+      false; // To track if the button should be visible
 
   void calculateResults() {
     final double weight = double.tryParse(_weightController.text) ?? 0;
@@ -27,14 +31,23 @@ class _DobutamineState extends State<Dobutamine> {
             final double dosage = index + 1.0; // Dosage increment
             return calculator.calculateDripRate(dosage, dobutamineVolume);
           });
+          showAddTreatmentButton = true; // Show Add Treatment button
         });
       } else {
         setState(() {
           dobAndNaCl = {};
           dripRates = [];
+          showAddTreatmentButton = false; // Hide Add Treatment button
         });
         print('Invalid Dobutamine volume.');
       }
+    } else {
+      setState(() {
+        dobAndNaCl = {};
+        dripRates = [];
+        showAddTreatmentButton = false; // Hide Add Treatment button
+      });
+      print('Invalid weight input.');
     }
   }
 
@@ -103,7 +116,7 @@ class _DobutamineState extends State<Dobutamine> {
                       Table(
                         border: TableBorder.all(),
                         columnWidths: const {
-                          0: FlexColumnWidth(1),
+                          0: FlexColumnWidth(2.5),
                           1: FlexColumnWidth(2),
                           2: FlexColumnWidth(2),
                           3: FlexColumnWidth(2),
@@ -112,37 +125,45 @@ class _DobutamineState extends State<Dobutamine> {
                         children: [
                           // Table Header Row
                           TableRow(
-                            decoration: BoxDecoration(color: Colors.grey[300]),
+                            decoration: BoxDecoration(
+                                color:
+                                    const Color.fromARGB(255, 225, 240, 226)),
                             children: [
                               Padding(
                                 padding: EdgeInsets.all(8.0),
-                                child: Text('Dosage',
-                                    style:
-                                        TextStyle(fontWeight: FontWeight.bold)),
+                                child: Text('Dosage         (µg/kg/min)',
+                                    style: TextStyle(
+                                        fontSize: 10,
+                                        fontWeight: FontWeight.bold)),
                               ),
                               Padding(
                                 padding: EdgeInsets.all(8.0),
                                 child: Text('ml/min',
-                                    style:
-                                        TextStyle(fontWeight: FontWeight.bold)),
+                                    style: TextStyle(
+                                        fontSize: 10,
+                                        fontWeight: FontWeight.bold)),
                               ),
                               Padding(
                                 padding: EdgeInsets.all(8.0),
                                 child: Text('drop/min',
-                                    style:
-                                        TextStyle(fontWeight: FontWeight.bold)),
+                                    style: TextStyle(
+                                        fontSize: 10,
+                                        fontWeight: FontWeight.bold)),
                               ),
                               Padding(
                                 padding: EdgeInsets.all(8.0),
                                 child: Text('drop/sec',
-                                    style:
-                                        TextStyle(fontWeight: FontWeight.bold)),
+                                    style: TextStyle(
+                                        fontSize: 10,
+                                        fontWeight: FontWeight.bold,
+                                        )),
                               ),
                               Padding(
                                 padding: EdgeInsets.all(8.0),
                                 child: Text('sec/drop',
-                                    style:
-                                        TextStyle(fontWeight: FontWeight.bold)),
+                                    style: TextStyle(
+                                        fontSize: 10,
+                                        fontWeight: FontWeight.bold)),
                               ),
                             ],
                           ),
@@ -154,7 +175,7 @@ class _DobutamineState extends State<Dobutamine> {
                               children: [
                                 Padding(
                                   padding: EdgeInsets.all(8.0),
-                                  child: Text('$index µg/kg/min'),
+                                  child: Text('$index'),
                                 ),
                                 Padding(
                                   padding: EdgeInsets.all(8.0),
@@ -181,6 +202,17 @@ class _DobutamineState extends State<Dobutamine> {
                           }).toList(),
                         ],
                       ),
+                      SizedBox(height: 16),
+                      if (showAddTreatmentButton)
+                        AddTreatmentButton(
+                          onTreatmentAdded: () {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                  content:
+                                      Text('Treatment process completed.')),
+                            );
+                          },
+                        )
                     ],
                   ),
               ],

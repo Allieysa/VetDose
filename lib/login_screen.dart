@@ -1,8 +1,7 @@
-// ignore_for_file: unused_local_variable, library_private_types_in_public_api, use_build_context_synchronously, prefer_const_constructors
-
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:vetdose/main%20page/main_screen.dart';
+import 'package:vetdose/main%20page/controller.dart';
 import 'signup_screen.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -17,9 +16,17 @@ class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController _passwordController = TextEditingController();
 
   bool _isLoading = false;
+  bool _obscureText = true;
   String _errorMessage = '';
 
   Future<void> _signIn() async {
+    if (_emailController.text.isEmpty || _passwordController.text.isEmpty) {
+      setState(() {
+        _errorMessage = 'Please fill in both email and password.';
+      });
+      return;
+    }
+
     setState(() {
       _isLoading = true;
       _errorMessage = '';
@@ -31,13 +38,11 @@ class _LoginScreenState extends State<LoginScreen> {
         password: _passwordController.text.trim(),
       );
 
-      // If sign-in is successful, navigate to the main screen
-      Navigator.pushReplacement(
+      final controller = Controller(); // Create a Controller instance
+      Navigator.pushReplacementNamed(
         context,
-        MaterialPageRoute(
-            builder: (context) => MainScreen(
-                  showWelcome: true,
-                )),
+        '/home',
+        arguments: {'controller': controller, 'showWelcome': true},
       );
     } on FirebaseAuthException catch (e) {
       setState(() {
@@ -53,7 +58,9 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(),
+      appBar: AppBar(
+        title: Text('Login'),
+      ),
       body: SafeArea(
         child: SingleChildScrollView(
           child: Padding(
@@ -83,14 +90,24 @@ class _LoginScreenState extends State<LoginScreen> {
                   decoration: InputDecoration(
                     labelText: 'Password',
                     border: OutlineInputBorder(),
+                    suffixIcon: IconButton(
+                      icon: Icon(
+                        _obscureText ? Icons.visibility : Icons.visibility_off,
+                      ),
+                      onPressed: () {
+                        setState(() {
+                          _obscureText = !_obscureText;
+                        });
+                      },
+                    ),
                   ),
-                  obscureText: true,
+                  obscureText: _obscureText,
                 ),
                 SizedBox(height: 10),
                 _isLoading
                     ? CircularProgressIndicator()
                     : ElevatedButton(
-                        onPressed: _signIn,
+                        onPressed: _isLoading ? null : _signIn,
                         child: Text('Sign In'),
                       ),
                 SizedBox(height: 10),

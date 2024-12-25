@@ -1,9 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'add_patient_dialog.dart';
+import 'package:vetdose/bottom_nav_bar.dart';
+import 'package:vetdose/main page/controller.dart';
+import 'package:vetdose/profile screen/patient_details_screen.dart';
 
 class PatientHistoryScreen extends StatefulWidget {
+  final Controller controller;
+
+  const PatientHistoryScreen({Key? key, required this.controller})
+      : super(key: key);
+
   @override
   _PatientHistoryScreenState createState() => _PatientHistoryScreenState();
 }
@@ -11,9 +18,19 @@ class PatientHistoryScreen extends StatefulWidget {
 class _PatientHistoryScreenState extends State<PatientHistoryScreen> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  int _currentIndex = 3; //Patient in BottomNavBar
+
+  void _onNavBarTap(int index) {
+    if (index != _currentIndex) {
+      widget.controller
+          .onTabTapped(index, context); // Use Controller for navigation
+      setState(() {
+        _currentIndex = index;
+      });
+    }
+  }
 
   void _showAddPatientDialog() {
-    // Controllers to capture user input
     final TextEditingController typeController = TextEditingController();
     final TextEditingController nameController = TextEditingController();
     final TextEditingController ageController = TextEditingController();
@@ -39,8 +56,8 @@ class _PatientHistoryScreenState extends State<PatientHistoryScreen> {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                _buildInputField('Animal type', typeController),
-                _buildInputField('Animal name', nameController),
+                _buildInputField('Animal Type', typeController),
+                _buildInputField('Animal Name', nameController),
                 _buildInputField('Age', ageController),
                 _buildInputField('Weight', weightController),
                 _buildInputField('Symptoms', symptomsController),
@@ -49,12 +66,11 @@ class _PatientHistoryScreenState extends State<PatientHistoryScreen> {
           ),
           actions: [
             TextButton(
-              onPressed: () => Navigator.pop(context), // Close dialog
+              onPressed: () => Navigator.pop(context),
               child: Text('Cancel'),
             ),
             ElevatedButton(
               onPressed: () async {
-                // Save patient data to Firestore
                 await _savePatientData(
                   typeController.text,
                   nameController.text,
@@ -62,7 +78,7 @@ class _PatientHistoryScreenState extends State<PatientHistoryScreen> {
                   weightController.text,
                   symptomsController.text,
                 );
-                Navigator.pop(context); // Close the dialog
+                Navigator.pop(context);
               },
               child: Text('Save'),
             ),
@@ -89,12 +105,11 @@ class _PatientHistoryScreenState extends State<PatientHistoryScreen> {
     );
   }
 
-  Future<void> _savePatientData(
-      String type, String name, String age, String weight, String symptoms) async {
+  Future<void> _savePatientData(String type, String name, String age,
+      String weight, String symptoms) async {
     User? user = _auth.currentUser;
 
     if (user != null) {
-      // Save to Firestore under /users/{userID}/patient_history
       await _firestore
           .collection('users')
           .doc(user.uid)
@@ -125,22 +140,18 @@ class _PatientHistoryScreenState extends State<PatientHistoryScreen> {
         elevation: 0,
         actions: [
           ElevatedButton(
-  onPressed: () {
-    showAddPatientDialog(context, () {
-      setState(() {}); // Refresh StreamBuilder
-    });
-  },
-  style: ElevatedButton.styleFrom(
-    backgroundColor: Colors.grey[300],
-    shape: RoundedRectangleBorder(
-      borderRadius: BorderRadius.circular(20),
-    ),
-  ),
-  child: Text(
-    'Add patient',
-    style: TextStyle(color: Colors.black),
-  ),
-),
+            onPressed: _showAddPatientDialog,
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.grey[300],
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(20),
+              ),
+            ),
+            child: Text(
+              'Add Patient',
+              style: TextStyle(color: Colors.black),
+            ),
+          ),
         ],
       ),
       body: StreamBuilder<QuerySnapshot>(
@@ -151,8 +162,10 @@ class _PatientHistoryScreenState extends State<PatientHistoryScreen> {
             .orderBy('timestamp', descending: true)
             .snapshots(),
         builder: (context, snapshot) {
-          if (snapshot.hasError) return Center(child: Text('Error loading data'));
-          if (!snapshot.hasData) return Center(child: CircularProgressIndicator());
+          if (snapshot.hasError)
+            return Center(child: Text('Error loading data'));
+          if (!snapshot.hasData)
+            return Center(child: CircularProgressIndicator());
 
           final patients = snapshot.data!.docs;
 
@@ -161,41 +174,61 @@ class _PatientHistoryScreenState extends State<PatientHistoryScreen> {
           }
 
           return ListView.builder(
-            itemCount: patients.length,
-            itemBuilder: (context, index) {
-              final patient = patients[index].data() as Map<String, dynamic>;
-              return Card(
-                color: Colors.grey[300],
-                margin: EdgeInsets.all(8.0),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: ListTile(
-                  contentPadding: EdgeInsets.all(16),
-                  title: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text('${patient['name']}',
-                          style: TextStyle(fontWeight: FontWeight.bold)),
-                      Text(patient['type'] ?? '',
-                          style: TextStyle(fontWeight: FontWeight.bold)),
-                    ],
+              itemCount: patients.length,
+              itemBuilder: (context, index) {
+                final patientDoc = patients[index];
+                final patient = patientDoc.data() as Map<String, dynamic>;
+
+                return Card(
+                  color: Colors.grey[300],
+                  margin: EdgeInsets.all(8.0),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
                   ),
-                  subtitle: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      SizedBox(height: 8),
-                      Text('Age: ${patient['age']}'),
-                      Text('Weight: ${patient['weight']}'),
-                      Text('Symptoms: ${patient['symptoms']}'),
-                    ],
+                  child: ListTile(
+                    contentPadding: EdgeInsets.all(16),
+                    title: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          patient['name'] ?? '',
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                        Text(
+                          patient['type'] ?? '',
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                      ],
+                    ),
+                    subtitle: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        SizedBox(height: 8),
+                        Text('Age: ${patient['age']}'),
+                        Text('Weight: ${patient['weight']}'),
+                        Text('Symptoms: ${patient['symptoms']}'),
+                      ],
+                    ),
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => PatientDetailsScreen(
+                            patientId:
+                                patientDoc.id, // Pass the Firestore document ID
+                          ),
+                        ),
+                      );
+                    },
                   ),
-                  trailing: Icon(Icons.arrow_forward_ios),
-                ),
-              );
-            },
-          );
+                );
+              }
+            );
         },
+      ),
+      bottomNavigationBar: BottomNavBar(
+        currentIndex: _currentIndex,
+        onTap: _onNavBarTap,
       ),
     );
   }

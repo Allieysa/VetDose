@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:vetdose/converter screen/treatment_button.dart';
 
 class Detomidine extends StatefulWidget {
   @override
@@ -13,6 +14,8 @@ class _DetomidineState extends State<Detomidine> {
   Map<String, double>? discardedNaCl;
   List<Map<String, double>>? dripRatesOption1;
   List<Map<String, double>>? dripRatesOption2;
+
+  bool showAddTreatmentButton = false; // To track if the button should be visible
 
   void calculateResults() {
     final double weight = double.tryParse(_weightController.text) ?? 0;
@@ -29,17 +32,21 @@ class _DetomidineState extends State<Detomidine> {
             calculator.calculateDripRate('Option1', criSolutions!['Option1']!);
         dripRatesOption2 =
             calculator.calculateDripRate('Option2', criSolutions!['Option2']!);
+
+        showAddTreatmentButton = true; // Show the Add Treatment button
       });
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Please enter a valid weight.')),
+      );
     }
   }
-
-  Widget tableCell(String text, {bool bold = false}) {
+    Widget tableCell(String text, {bool bold = false}) {
     return Padding(
       padding: EdgeInsets.all(8.0),
       child: Text(
         text,
-        style:
-            TextStyle(fontWeight: bold ? FontWeight.bold : FontWeight.normal),
+        style: TextStyle(fontWeight: bold ? FontWeight.bold : FontWeight.normal),
         textAlign: TextAlign.center,
       ),
     );
@@ -70,7 +77,6 @@ class _DetomidineState extends State<Detomidine> {
               ),
               SizedBox(height: 16),
               if (bolusInjection != null) ...[
-                // Step 1: Bolus Injection
                 Text('Step 1: Bolus Injection',
                     style: TextStyle(fontWeight: FontWeight.bold)),
                 Table(
@@ -86,9 +92,7 @@ class _DetomidineState extends State<Detomidine> {
                     ]),
                   ],
                 ),
-
                 SizedBox(height: 16),
-                // Step 2: CRI Solution
                 Text('Step 2: CRI Solution',
                     style: TextStyle(fontWeight: FontWeight.bold)),
                 Table(
@@ -110,7 +114,6 @@ class _DetomidineState extends State<Detomidine> {
                     ]),
                   ],
                 ),
-
                 SizedBox(height: 16),
                 // Step 3: Discarded NaCl Solution
                 Text('Step 3: Discarded NaCl Solution',
@@ -139,27 +142,24 @@ class _DetomidineState extends State<Detomidine> {
                 // Step 5: Drip Rates (Option 1)
                 Text('Step 5: Drip Rates (Option 1)',
                     style: TextStyle(fontWeight: FontWeight.bold)),
-                Table(
-                  border: TableBorder.all(color: Colors.black),
-                  children: [
-                    TableRow(children: [
-                      tableCell('Dosage (mg/kg/hr)', bold: true),
-                      tableCell('ml/min', bold: true),
-                      tableCell('drop/min', bold: true),
-                      tableCell('drop/sec', bold: true),
-                      tableCell('sec/drop', bold: true),
-                    ]),
-                    ...dripRatesOption1!.map((rate) {
-                      return TableRow(children: [
-                        tableCell('${rate['dosage']?.toStringAsFixed(3)}'),
-                        tableCell('${rate['ml/min']?.toStringAsFixed(2)}'),
-                        tableCell('${rate['drop/min']?.toStringAsFixed(2)}'),
-                        tableCell('${rate['drop/sec']?.toStringAsFixed(4)}'),
-                        tableCell('${rate['sec/drop']?.toStringAsFixed(0)}'),
-                      ]);
-                    }).toList(),
-                  ],
-                ),
+                Table(border: TableBorder.all(color: Colors.black), children: [
+                  TableRow(children: [
+                    tableCell('Dosage (mg/kg/hr)', bold: true),
+                    tableCell('ml/min', bold: true),
+                    tableCell('drop/min', bold: true),
+                    tableCell('drop/sec', bold: true),
+                    tableCell('sec/drop', bold: true),
+                  ]),
+                  ...dripRatesOption1!.map((rate) {
+                    return TableRow(children: [
+                      tableCell('${rate['dosage']?.toStringAsFixed(3)}'),
+                      tableCell('${rate['ml/min']?.toStringAsFixed(2)}'),
+                      tableCell('${rate['drop/min']?.toStringAsFixed(2)}'),
+                      tableCell('${rate['drop/sec']?.toStringAsFixed(4)}'),
+                      tableCell('${rate['sec/drop']?.toStringAsFixed(0)}'),
+                    ]);
+                  }).toList(),
+                ]),
 
                 SizedBox(height: 16),
                 // Step 5: Drip Rates (Option 2)
@@ -186,6 +186,15 @@ class _DetomidineState extends State<Detomidine> {
                     }).toList(),
                   ],
                 ),
+                 SizedBox(height: 16),
+              if (showAddTreatmentButton)
+                AddTreatmentButton(
+                  onTreatmentAdded: () {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text('Treatment process completed.')),
+                    );
+                  },
+                )
               ],
             ],
           ),

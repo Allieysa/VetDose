@@ -99,6 +99,25 @@ class _NotePageState extends State<NotePage> {
       }
     }
   }
+  //edit note
+  Future<void> editNote(String noteId, String newContent) async {
+    String userId = FirebaseAuth.instance.currentUser!.uid;
+    try {
+      await FirebaseFirestore.instance
+          .collection('users')
+          .doc(userId)
+          .collection('notes')
+          .doc(noteId)
+          .update({
+        'content': newContent,
+        'timestamp': FieldValue.serverTimestamp(),
+      });
+      print('Note updated successfully');
+    } catch (e) {
+      print('Error updating note: $e');
+    }
+  }
+
 
   Future<void> deleteNoteAtIndex(String noteId) async {
     String userId = _auth.currentUser!.uid;
@@ -109,6 +128,43 @@ class _NotePageState extends State<NotePage> {
         .doc(noteId)
         .delete();
     print('Note deleted: $noteId');
+  }
+void showEditNoteDialog(String noteId, String currentContent) {
+    final TextEditingController editController =
+        TextEditingController(text: currentContent);
+
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('Edit Note'),
+          content: TextField(
+            controller: editController,
+            decoration: const InputDecoration(hintText: 'Update your note'),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context); // Close the dialog
+              },
+              child: const Text('Cancel'),
+            ),
+            ElevatedButton(
+              onPressed: () async {
+                final updatedContent = editController.text.trim();
+                if (updatedContent.isNotEmpty) {
+                  await editNote(noteId, updatedContent);
+                  Navigator.pop(context); // Close the dialog
+                } else {
+                  print('Note content is empty');
+                }
+              },
+              child: const Text('Save'),
+            ),
+          ],
+        );
+      },
+    );
   }
 
   void showDeleteConfirmationDialog(String noteId) {
@@ -212,11 +268,20 @@ class _NotePageState extends State<NotePage> {
                               : '',
                           style: TextStyle(color: Colors.grey),
                         ),
-                        trailing: IconButton(
-                          icon: Icon(Icons.delete, color: Colors.red),
-                          onPressed: () => showDeleteConfirmationDialog(noteId),
+                         trailing: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            IconButton(
+                               icon: const Icon(Icons.edit, color: Colors.blue),
+                               onPressed: () => showEditNoteDialog(noteId, content),
+                            ),
+                            IconButton(
+                               icon: const Icon(Icons.delete, color: Colors.red),
+                               onPressed: () => showDeleteConfirmationDialog(noteId),
+                            ),
+                          ]
                         ),
-                      ),
+                      )
                     );
                   },
                 );
@@ -258,5 +323,8 @@ class _NotePageState extends State<NotePage> {
         child: Icon(Icons.note_add),
       ),
     );
+
+  
+    
   }
 }

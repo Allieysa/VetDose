@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:vetdose/converter screen/treatment_button.dart';
 
 class Lidocaine extends StatefulWidget {
   @override
@@ -14,11 +15,15 @@ class _LidocaineState extends State<Lidocaine> {
   Map<String, double>? dripRateOption1;
   Map<String, double>? dripRateOption2;
 
+      bool showAddTreatmentButton = false; // Show Add Treatment button
+
   void calculateResults() {
     final double weight = double.tryParse(_weightController.text) ?? 0;
 
     if (weight > 0) {
       final calculator = LidocaineCalculator(weight);
+
+          showAddTreatmentButton = true; // Show Add Treatment button
 
       setState(() {
         bolusInjection = calculator.calculateBolusInjection();
@@ -189,6 +194,15 @@ class _LidocaineState extends State<Lidocaine> {
                     ]),
                   ],
                 ),
+                         SizedBox(height: 16),
+                if (showAddTreatmentButton)
+                  AddTreatmentButton(
+                    onTreatmentAdded: () {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text('Treatment process completed.')),
+                      );
+                    },
+                  ),
               ],
             ],
           ),

@@ -1,8 +1,9 @@
-// ignore_for_file: library_private_types_in_public_api, prefer_const_constructors
-
 import 'package:flutter/material.dart';
-import 'dart:async';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'login_screen.dart';
+import 'package:vetdose/main page/main_screen.dart';
+import 'package:vetdose/main page/controller.dart';
+import 'dart:async';
 
 class SplashScreen extends StatefulWidget {
   @override
@@ -13,14 +14,31 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
-
-    // Navigate to the Login screen after a delay
+    // Check the user's authentication state after a delay
     Timer(Duration(seconds: 3), () {
+      _checkLoginState();
+    });
+  }
+
+  void _checkLoginState() {
+    final user = FirebaseAuth.instance.currentUser;
+
+    if (user != null) {
+      // User is logged in, navigate to MainScreen
+      final controller = Controller(); // Create a Controller instance
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => MainScreen(controller: controller),
+        ),
+      );
+    } else {
+      // User is not logged in, navigate to LoginScreen
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (context) => LoginScreen()),
       );
-    });
+    }
   }
 
   @override
