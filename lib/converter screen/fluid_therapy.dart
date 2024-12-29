@@ -182,15 +182,10 @@ class _FluidTherapyState extends State<FluidTherapy> {
                   'Drops Per Second: ${dropsPerSecond.toStringAsFixed(2)} drops/sec'),
               Text(
                   'Seconds Per Drop: ${secondsPerDrop.toStringAsFixed(2)} sec/drop'),
-              
               SizedBox(height: 16),
               if (showAddTreatmentButton)
                 AddTreatmentButton(
-                  onTreatmentAdded: () {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text('Treatment process completed.')),
-                    );
-                  },
+                  onTreatmentAdded: () {},
                 ),
             ],
           )),

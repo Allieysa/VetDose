@@ -15,7 +15,8 @@ class _DetomidineState extends State<Detomidine> {
   List<Map<String, double>>? dripRatesOption1;
   List<Map<String, double>>? dripRatesOption2;
 
-  bool showAddTreatmentButton = false; // To track if the button should be visible
+  bool showAddTreatmentButton =
+      false; // To track if the button should be visible
 
   void calculateResults() {
     final double weight = double.tryParse(_weightController.text) ?? 0;
@@ -41,12 +42,14 @@ class _DetomidineState extends State<Detomidine> {
       );
     }
   }
-    Widget tableCell(String text, {bool bold = false}) {
+
+  Widget tableCell(String text, {bool bold = false}) {
     return Padding(
       padding: EdgeInsets.all(8.0),
       child: Text(
         text,
-        style: TextStyle(fontWeight: bold ? FontWeight.bold : FontWeight.normal),
+        style:
+            TextStyle(fontWeight: bold ? FontWeight.bold : FontWeight.normal),
         textAlign: TextAlign.center,
       ),
     );
@@ -186,15 +189,11 @@ class _DetomidineState extends State<Detomidine> {
                     }).toList(),
                   ],
                 ),
-                 SizedBox(height: 16),
-              if (showAddTreatmentButton)
-                AddTreatmentButton(
-                  onTreatmentAdded: () {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text('Treatment process completed.')),
-                    );
-                  },
-                )
+                SizedBox(height: 16),
+                if (showAddTreatmentButton)
+                  AddTreatmentButton(
+                    onTreatmentAdded: () {},
+                  )
               ],
             ],
           ),

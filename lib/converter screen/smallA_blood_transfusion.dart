@@ -22,7 +22,7 @@ class _BloodTransfusionPageState extends State<BloodTransfusionPage> {
   double totalBloodVolumeDog = 0.0;
   double donorBloodVolume = 0.0;
 
-bool showAddTreatmentButton = false; // Show Add Treatment button
+  bool showAddTreatmentButton = false; // Show Add Treatment button
 
   void calculateResults() {
     double recipientWeight =
@@ -52,7 +52,6 @@ bool showAddTreatmentButton = false; // Show Add Treatment button
 
     showAddTreatmentButton = true; // Show Add Treatment button
 
-
     setState(() {});
   }
 
@@ -60,7 +59,7 @@ bool showAddTreatmentButton = false; // Show Add Treatment button
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Blood Transfusion Calculator'),
+        title: const Text('Blood Transfusion Calculator'),
         centerTitle: true,
       ),
       body: Padding(
@@ -71,40 +70,40 @@ bool showAddTreatmentButton = false; // Show Add Treatment button
             children: [
               // Recipient Input Section
               Card(
-                elevation: 3,
+                color: Colors.white,
                 child: Padding(
                   padding: const EdgeInsets.all(16.0),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
+                      const Text(
                         'Recipient Information',
                         style: TextStyle(
                             fontSize: 18, fontWeight: FontWeight.bold),
                       ),
-                      SizedBox(height: 10),
+                      const SizedBox(height: 10),
                       TextField(
                         controller: recipientWeightController,
                         keyboardType: TextInputType.number,
-                        decoration: InputDecoration(
+                        decoration: const InputDecoration(
                           labelText: 'Recipient Weight (kg)',
                           border: OutlineInputBorder(),
                         ),
                       ),
-                      SizedBox(height: 10),
+                      const SizedBox(height: 10),
                       TextField(
                         controller: recipientPCVController,
                         keyboardType: TextInputType.number,
-                        decoration: InputDecoration(
+                        decoration: const InputDecoration(
                           labelText: 'Recipient PCV (%)',
                           border: OutlineInputBorder(),
                         ),
                       ),
-                      SizedBox(height: 10),
+                      const SizedBox(height: 10),
                       TextField(
                         controller: desiredPCVController,
                         keyboardType: TextInputType.number,
-                        decoration: InputDecoration(
+                        decoration: const InputDecoration(
                           labelText: 'Desired PCV (%)',
                           border: OutlineInputBorder(),
                         ),
@@ -113,34 +112,34 @@ bool showAddTreatmentButton = false; // Show Add Treatment button
                   ),
                 ),
               ),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
               // Donor Input Section
               Card(
-                elevation: 3,
+                color: Colors.white,
                 child: Padding(
                   padding: const EdgeInsets.all(16.0),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
+                      const Text(
                         'Donor Information',
                         style: TextStyle(
                             fontSize: 18, fontWeight: FontWeight.bold),
                       ),
-                      SizedBox(height: 10),
+                      const SizedBox(height: 10),
                       TextField(
                         controller: donorWeightController,
                         keyboardType: TextInputType.number,
-                        decoration: InputDecoration(
+                        decoration: const InputDecoration(
                           labelText: 'Donor Weight (kg)',
                           border: OutlineInputBorder(),
                         ),
                       ),
-                      SizedBox(height: 10),
+                      const SizedBox(height: 10),
                       TextField(
                         controller: donorPCVController,
                         keyboardType: TextInputType.number,
-                        decoration: InputDecoration(
+                        decoration: const InputDecoration(
                           labelText: 'Donor PCV (%)',
                           border: OutlineInputBorder(),
                         ),
@@ -149,68 +148,75 @@ bool showAddTreatmentButton = false; // Show Add Treatment button
                   ),
                 ),
               ),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
+              // Calculate Button
               ElevatedButton(
                 onPressed: calculateResults,
-                child: Text('Calculate'),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.teal, // Button background color
+                  foregroundColor: Colors.white, // Text color
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12), // Rounded corners
+                  ),
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 12.0, vertical: 6.0),
+                ),
+                child: const Text('Calculate'),
               ),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
               // Results for Cats
               Card(
-                elevation: 3,
                 child: Padding(
                   padding: const EdgeInsets.all(16.0),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
+                      const Text(
                         'Results for Cats',
                         style: TextStyle(
                             fontSize: 18, fontWeight: FontWeight.bold),
                       ),
-                      SizedBox(height: 10),
+                      const SizedBox(height: 10),
                       Text(
                           'Volume Required: ${volumeRequiredCat.toStringAsFixed(2)} mL'),
                     ],
                   ),
                 ),
               ),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
               // Results for Dogs
               Card(
-                elevation: 3,
                 child: Padding(
                   padding: const EdgeInsets.all(16.0),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
+                      const Text(
                         'Results for Dogs',
                         style: TextStyle(
                             fontSize: 18, fontWeight: FontWeight.bold),
                       ),
-                      SizedBox(height: 10),
+                      const SizedBox(height: 10),
                       Text(
                           'Volume Required: ${volumeRequiredDog.toStringAsFixed(2)} mL'),
                     ],
                   ),
                 ),
               ),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
               // Infusion Rates
               Card(
-                elevation: 3,
                 child: Padding(
                   padding: const EdgeInsets.all(16.0),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
+                      const Text(
                         'Infusion Rates',
                         style: TextStyle(
                             fontSize: 18, fontWeight: FontWeight.bold),
                       ),
-                      SizedBox(height: 10),
+                      const SizedBox(height: 10),
                       Text(
                           'First 15 min: ${infusionRateFirst15.toStringAsFixed(2)} mL/hr'),
                       Text(
@@ -219,14 +225,11 @@ bool showAddTreatmentButton = false; // Show Add Treatment button
                   ),
                 ),
               ),
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
+              // Add Treatment Button (Conditional)
               if (showAddTreatmentButton)
                 AddTreatmentButton(
-                  onTreatmentAdded: () {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text('Treatment process completed.')),
-                    );
-                  },
+                  onTreatmentAdded: () {},
                 ),
             ],
           ),

@@ -1,11 +1,4 @@
-// ignore_for_file: unused_import
-
 import 'package:flutter/material.dart';
-import 'package:vetdose/main page/main_screen.dart';
-import 'package:vetdose/calculator screen/calculator_screen.dart';
-import 'package:vetdose/converter screen/converter_first_screen.dart';
-import 'package:vetdose/profile screen/profile_screen.dart';
-import 'package:vetdose/profile screen/patient_history.dart';
 
 class Controller {
   final TextEditingController weightController = TextEditingController();
@@ -14,48 +7,31 @@ class Controller {
   // Notify changes in weight unit
   ValueNotifier<bool> isKgNotifier = ValueNotifier<bool>(true);
 
+  int currentIndex = 0; // Track the current index
+
+  // Manage tab changes with navigation
   void onTabTapped(int index, BuildContext context) {
+    if (index == currentIndex) return; // Prevent navigating to the same screen
+
+    currentIndex = index; // Update the current index
+    Navigator.pushReplacementNamed(context, _getRouteName(index));
+  }
+
+  // Map index to route names
+  String _getRouteName(int index) {
     switch (index) {
-      case 0: // Calculator
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-            builder: (context) => CalculatorScreen(controller: this),
-          ),
-        );
-        break;
-      case 1: // Converter
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-            builder: (context) => ConverterScreen(controller: this),
-          ),
-        );
-        break;
-      case 2: // Main Screen
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-            builder: (context) => MainScreen(controller: this),
-          ),
-        );
-        break;
-      case 3: // Patient
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-            builder: (context) => PatientHistoryScreen(controller: this),
-          ),
-        );
-        break;
-      case 4: // Profile
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-            builder: (context) => ProfileScreen(controller: this),
-          ),
-        );
-        break;
+      case 0:
+        return '/calculator';
+      case 1:
+        return '/converter';
+      case 2:
+        return '/home';
+      case 3:
+        return '/patient';
+      case 4:
+        return '/profile';
+      default:
+        return '/home'; // Default fallback route
     }
   }
 }

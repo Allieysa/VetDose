@@ -14,7 +14,7 @@ class _XylazineState extends State<Xylazine> {
   Map<String, double>? dripRateOption1_07, dripRateOption1_11;
   Map<String, double>? dripRateOption2_07, dripRateOption2_11;
 
-    bool showAddTreatmentButton =
+  bool showAddTreatmentButton =
       false; // To track if the button should be visible
 
   void calculateResults() {
@@ -22,8 +22,8 @@ class _XylazineState extends State<Xylazine> {
 
     if (weight > 0) {
       final calculator = XylazineCalculator(weight);
-          
-          showAddTreatmentButton = true; // Show Add Treatment button
+
+      showAddTreatmentButton = true; // Show Add Treatment button
 
       setState(() {
         bolusInjection = calculator.calculateBolusInjection();
@@ -275,11 +275,7 @@ class _XylazineState extends State<Xylazine> {
                 SizedBox(height: 16),
                 if (showAddTreatmentButton)
                   AddTreatmentButton(
-                    onTreatmentAdded: () {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text('Treatment process completed.')),
-                      );
-                    },
+                    onTreatmentAdded: () {},
                   ),
               ],
             ],
@@ -321,7 +317,11 @@ class XylazineCalculator {
     double volumeFactor = option == 'Option1' ? 100 : 250;
 
     final double mlPerMinute = (1 / 100) *
-        dosageMgPerKgHr * bodyWeight * volumeFactor / solutionVolume / 60;
+        dosageMgPerKgHr *
+        bodyWeight *
+        volumeFactor /
+        solutionVolume /
+        60;
 
     final double dropsPerMinute = mlPerMinute * 20;
     final double dropsPerSecond = dropsPerMinute / 60;

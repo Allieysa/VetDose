@@ -175,7 +175,8 @@ class AddTreatmentButton extends StatelessWidget {
       icon: Icon(Icons.add_box, color: Colors.white), // Icon for the button
       label: Text('Add Treatment'), // Text label
       style: ElevatedButton.styleFrom(
-        backgroundColor: Colors.blue, // Button color
+        backgroundColor: Colors.teal, // Button background color
+        foregroundColor: Colors.white, // Button color
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(12), // Rounded corners
         ),

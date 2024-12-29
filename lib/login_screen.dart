@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:vetdose/main%20page/main_screen.dart';
 import 'package:vetdose/main%20page/controller.dart';
 import 'signup_screen.dart';
 
@@ -33,6 +32,7 @@ class _LoginScreenState extends State<LoginScreen> {
     });
 
     try {
+      // ignore: unused_local_variable
       UserCredential userCredential = await _auth.signInWithEmailAndPassword(
         email: _emailController.text.trim(),
         password: _passwordController.text.trim(),

@@ -7,9 +7,13 @@ import 'package:vetdose/profile screen/patient_details_screen.dart';
 
 class PatientHistoryScreen extends StatefulWidget {
   final Controller controller;
+  final int currentIndex;
 
-  const PatientHistoryScreen({Key? key, required this.controller})
-      : super(key: key);
+  const PatientHistoryScreen({
+    Key? key,
+    required this.controller,
+    required this.currentIndex,
+  }) : super(key: key);
 
   @override
   _PatientHistoryScreenState createState() => _PatientHistoryScreenState();
@@ -18,17 +22,6 @@ class PatientHistoryScreen extends StatefulWidget {
 class _PatientHistoryScreenState extends State<PatientHistoryScreen> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-  int _currentIndex = 3; //Patient in BottomNavBar
-
-  void _onNavBarTap(int index) {
-    if (index != _currentIndex) {
-      widget.controller
-          .onTabTapped(index, context); // Use Controller for navigation
-      setState(() {
-        _currentIndex = index;
-      });
-    }
-  }
 
   void _showAddPatientDialog() {
     final TextEditingController typeController = TextEditingController();
@@ -71,14 +64,26 @@ class _PatientHistoryScreenState extends State<PatientHistoryScreen> {
             ),
             ElevatedButton(
               onPressed: () async {
-                await _savePatientData(
+                if (_validateInputs([
                   typeController.text,
                   nameController.text,
                   ageController.text,
                   weightController.text,
                   symptomsController.text,
-                );
-                Navigator.pop(context);
+                ])) {
+                  await _savePatientData(
+                    typeController.text,
+                    nameController.text,
+                    ageController.text,
+                    weightController.text,
+                    symptomsController.text,
+                  );
+                  Navigator.pop(context);
+                } else {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text('All fields are required!')),
+                  );
+                }
               },
               child: Text('Save'),
             ),
@@ -86,6 +91,13 @@ class _PatientHistoryScreenState extends State<PatientHistoryScreen> {
         );
       },
     );
+  }
+
+  bool _validateInputs(List<String> inputs) {
+    for (var input in inputs) {
+      if (input.trim().isEmpty) return false;
+    }
+    return true;
   }
 
   Widget _buildInputField(String label, TextEditingController controller) {
@@ -162,10 +174,12 @@ class _PatientHistoryScreenState extends State<PatientHistoryScreen> {
             .orderBy('timestamp', descending: true)
             .snapshots(),
         builder: (context, snapshot) {
-          if (snapshot.hasError)
+          if (snapshot.hasError) {
             return Center(child: Text('Error loading data'));
-          if (!snapshot.hasData)
+          }
+          if (!snapshot.hasData) {
             return Center(child: CircularProgressIndicator());
+          }
 
           final patients = snapshot.data!.docs;
 
@@ -174,61 +188,62 @@ class _PatientHistoryScreenState extends State<PatientHistoryScreen> {
           }
 
           return ListView.builder(
-              itemCount: patients.length,
-              itemBuilder: (context, index) {
-                final patientDoc = patients[index];
-                final patient = patientDoc.data() as Map<String, dynamic>;
+            itemCount: patients.length,
+            itemBuilder: (context, index) {
+              final patientDoc = patients[index];
+              final patient = patientDoc.data() as Map<String, dynamic>;
 
-                return Card(
-                  color: Colors.grey[300],
-                  margin: EdgeInsets.all(8.0),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
+              return Card(
+                color: Colors.grey[300],
+                margin: EdgeInsets.all(8.0),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: ListTile(
+                  contentPadding: EdgeInsets.all(16),
+                  title: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        patient['name'] ?? '',
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                      Text(
+                        patient['type'] ?? '',
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                    ],
                   ),
-                  child: ListTile(
-                    contentPadding: EdgeInsets.all(16),
-                    title: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          patient['name'] ?? '',
-                          style: TextStyle(fontWeight: FontWeight.bold),
-                        ),
-                        Text(
-                          patient['type'] ?? '',
-                          style: TextStyle(fontWeight: FontWeight.bold),
-                        ),
-                      ],
-                    ),
-                    subtitle: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        SizedBox(height: 8),
-                        Text('Age: ${patient['age']}'),
-                        Text('Weight: ${patient['weight']}'),
-                        Text('Symptoms: ${patient['symptoms']}'),
-                      ],
-                    ),
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => PatientDetailsScreen(
-                            patientId:
-                                patientDoc.id, // Pass the Firestore document ID
-                          ),
-                        ),
-                      );
-                    },
+                  subtitle: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      SizedBox(height: 8),
+                      Text('Age: ${patient['age']}'),
+                      Text('Weight: ${patient['weight']}'),
+                      Text('Symptoms: ${patient['symptoms']}'),
+                    ],
                   ),
-                );
-              }
-            );
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => PatientDetailsScreen(
+                          patientId: patientDoc.id,
+                        ),
+                      ),
+                    );
+                  },
+                ),
+              );
+            },
+          );
         },
       ),
       bottomNavigationBar: BottomNavBar(
-        currentIndex: _currentIndex,
-        onTap: _onNavBarTap,
+        currentIndex: widget.currentIndex, // Use widget.currentIndex
+        onTap: (index) {
+          widget.controller.onTabTapped(index, context);
+        },
       ),
     );
   }

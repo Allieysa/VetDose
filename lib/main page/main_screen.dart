@@ -4,111 +4,96 @@ import 'controller.dart';
 import 'package:vetdose/bottom_nav_bar.dart';
 import 'package:vetdose/main page/category_page.dart';
 import 'package:vetdose/profile screen/add_patient_dialog.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class MainScreen extends StatefulWidget {
-  final bool showWelcome; // Flag to trigger the welcome dialog
   final Controller controller; // Controller for shared logic
+  final int currentIndex;
 
-  const MainScreen({
-    Key? key,
-    required this.controller,
-    this.showWelcome = false, // Default value for showWelcome
-  }) : super(key: key);
+  MainScreen({required this.controller, required this.currentIndex});
 
   @override
   _MainScreenState createState() => _MainScreenState();
 }
 
 class _MainScreenState extends State<MainScreen> {
-  final Controller controller = Controller();
-  int _currentIndex = 2; // Default to Home
-  DateTime? lastBackPressTime; // For double back to exit
+  late final Controller controller; // Use the passed controller
+  late int currentIndex;
 
   User? currentUser = FirebaseAuth.instance.currentUser; // Get the current user
 
   @override
   void initState() {
     super.initState();
-    // Schedule the dialog to appear after the first frame
+    controller = widget.controller;
+    currentIndex = widget.currentIndex;
+
+    // Schedule the welcome dialog to appear after the first frame
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (widget.showWelcome) {
-        _showWelcomeDialog();
-      }
+      _showWelcomeDialog();
     });
   }
 
-  void _showWelcomeDialog() {
-    String username =
-        currentUser?.displayName ?? currentUser?.email?.split('@')[0] ?? 'User';
-    showDialog(
-      context: context,
-      barrierDismissible: false, // Prevent dismissing the dialog accidentally
-      builder: (context) {
-        return AlertDialog(
-          title: Text('Hello, $username!'),
-          content: Text('Welcome to the app. What would you like to do?'),
-          actions: [
-            ElevatedButton(
-              onPressed: () {
-                Navigator.pop(context); // Close the dialog
-              },
-              child: Text('Close'),
-            ),
-            ElevatedButton(
-              onPressed: () {
-                Navigator.pop(context); // Close the welcome dialog
-                showAddPatientDialog(context, () {
-                  setState(() {}); // Refresh UI if needed
-                });
-              },
-              child: Text('Add Patient'),
-            ),
-          ],
-        );
-      },
-    );
+  void _showWelcomeDialog() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    bool hasSeenDialog = prefs.getBool('hasSeenDialog') ?? false;
+
+    if (!hasSeenDialog) {
+      String username = currentUser?.displayName ??
+          currentUser?.email?.split('@')[0] ??
+          'User';
+
+      showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (context) {
+          return AlertDialog(
+            title: Text('Hello, $username!'),
+            content: Text('Welcome to VetDose. What would you like to do?'),
+            actions: [
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.pop(context); // Close the dialog
+                },
+                child: Text('Close'),
+              ),
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.pop(context); // Close the welcome dialog
+                  showAddPatientDialog(context, () {
+                    setState(() {}); // Refresh the UI
+                  });
+                },
+                child: Text('Add Patient'),
+              ),
+            ],
+          );
+        },
+      );
+
+      // Mark the dialog as shown
+      await prefs.setBool('hasSeenDialog', true);
+    }
   }
 
   void _onTabTapped(int index) {
     setState(() {
-      _currentIndex = index;
+      currentIndex = index;
     });
     controller.onTabTapped(index, context);
   }
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: () async {
-        // Handle double back to exit
-        final now = DateTime.now();
-
-        if (lastBackPressTime == null ||
-            now.difference(lastBackPressTime!) > Duration(seconds: 2)) {
-          lastBackPressTime = now;
-
-          // Show a snackbar to notify the user
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text('Press back again to exit'),
-              duration: Duration(seconds: 2),
-            ),
-          );
-
-          return false; // Prevent exiting the app
-        }
-
-        return true; // Allow exiting the app
-      },
-      child: Scaffold(
+    return Scaffold(
         appBar: AppBar(
-          title: Row(
-            children: [
-              Text(
-                'Hello, ${currentUser?.displayName ?? 'User'}!',
-                style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold),
-              ),
-            ],
+          title: Text(
+            'Hello, ${currentUser?.displayName ?? 'User'}!',
+            style: TextStyle(
+              fontFamily: 'SF Pro',
+              fontSize: 19,
+              fontWeight: FontWeight.bold,
+            ),
           ),
           centerTitle: false,
           automaticallyImplyLeading: false,
@@ -117,7 +102,7 @@ class _MainScreenState extends State<MainScreen> {
           children: [
             Text(
               'This dosage is only for:',
-              style: TextStyle(fontSize: 11),
+              style: TextStyle(fontSize: 13),
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -152,7 +137,7 @@ class _MainScreenState extends State<MainScreen> {
                       borderRadius: BorderRadius.circular(10),
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.grey.withOpacity(0.5),
+                          color: Colors.grey.withOpacity(0.2),
                           spreadRadius: 1,
                           blurRadius: 5,
                           offset: Offset(0, 3),
@@ -180,33 +165,44 @@ class _MainScreenState extends State<MainScreen> {
               ),
             ),
             Expanded(
-              child: ListView(
+              child: GridView.count(
+                crossAxisCount: 2,
+                crossAxisSpacing: 16,
+                mainAxisSpacing: 16,
+                padding: const EdgeInsets.all(16),
                 children: [
-                  _buildProtocolItem('Pre-med', category: 'Premed'),
-                  _buildProtocolItem('Emergency', category: 'Emergency'),
-                  _buildProtocolItem('Induction', category: 'Induction'),
-                  _buildProtocolItem('Intubation', category: 'Intubation'),
-                  _buildProtocolItem('Local block', category: 'Local block'),
-                  _buildProtocolItem('Fluid rate', category: 'Fluid rate'),
-                  _buildProtocolItem('Inotropic', category: 'Inotropic'),
-                  _buildProtocolItem('Maintenance', category: 'Maintenance'),
+                  _buildProtocolItem('Pre-med', Icons.local_hospital,
+                      category: 'Premed'),
+                  _buildProtocolItem('Emergency', Icons.warning,
+                      category: 'Emergency'),
+                  _buildProtocolItem('Induction', Icons.auto_fix_high,
+                      category: 'Induction'),
+                  _buildProtocolItem('Intubation', Icons.air,
+                      category: 'Intubation'),
+                  _buildProtocolItem('Local block', Icons.healing,
+                      category: 'Local block'),
+                  _buildProtocolItem('Fluid rate', Icons.water_drop,
+                      category: 'Fluid rate'),
+                  _buildProtocolItem('Inotropic', Icons.science,
+                      category: 'Inotropic'),
+                  _buildProtocolItem('Maintenance', Icons.build,
+                      category: 'Maintenance'),
                 ],
               ),
             ),
-            BottomNavBar(
-              currentIndex: _currentIndex,
-              onTap: _onTabTapped,
-            ),
           ],
         ),
-      ),
-    );
+        bottomNavigationBar: BottomNavBar(
+          currentIndex: currentIndex,
+          onTap: (index) {
+            controller.onTabTapped(index, context);
+          },
+        ));
   }
 
-  Widget _buildProtocolItem(String title, {required String category}) {
-    return ListTile(
-      title: Text(title),
-      trailing: Icon(Icons.arrow_forward),
+  Widget _buildProtocolItem(String title, IconData icon,
+      {required String category}) {
+    return GestureDetector(
       onTap: () async {
         final double weightKg =
             double.tryParse(controller.weightController.text) ?? 0.0;
@@ -221,6 +217,33 @@ class _MainScreenState extends State<MainScreen> {
           ),
         );
       },
+      child: Card(
+        color: const Color.fromARGB(255, 255, 255, 255),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12),
+        ),
+        elevation: 2,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              icon,
+              size: 37,
+              color: Colors.teal.shade300,
+            ),
+            const SizedBox(height: 5),
+            Text(
+              title,
+              style: TextStyle(
+                fontSize: 13,
+                fontWeight: FontWeight.bold,
+                color: Colors.black54,
+              ),
+              textAlign: TextAlign.center,
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

@@ -3,11 +3,15 @@ import 'package:flutter/material.dart';
 class BottomNavBar extends StatefulWidget {
   final int currentIndex;
   final Function(int) onTap;
+  final Color selectedColor;
+  final Color unselectedColor;
 
   const BottomNavBar({
     Key? key,
     required this.currentIndex,
     required this.onTap,
+    this.selectedColor = Colors.teal,
+    this.unselectedColor = Colors.grey,
   }) : super(key: key);
 
   @override
@@ -15,21 +19,37 @@ class BottomNavBar extends StatefulWidget {
 }
 
 class _BottomNavBarState extends State<BottomNavBar> {
+  final List<IconData> _icons = [
+    Icons.calculate,
+    Icons.sync,
+    Icons.home,
+    Icons.animation,
+    Icons.person,
+  ];
+
+  final List<String> _labels = [
+    'Calculator',
+    'Converter',
+    'Home',
+    'Patient',
+    'Profile',
+  ];
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Container(
-        height: 80,
+        height: 70,
         decoration: BoxDecoration(
-          color: const Color.fromARGB(113, 164, 252, 237),
+          color: const Color.fromARGB(255, 255, 255, 255),
           borderRadius: const BorderRadius.vertical(
             top: Radius.circular(30),
           ),
         ),
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 23.0, vertical: 8.0),
+          padding: const EdgeInsets.symmetric(horizontal: 18.0, vertical: 8.0),
           child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: List.generate(5, (index) => _buildNavItem(index)),
           ),
         ),
@@ -42,61 +62,30 @@ class _BottomNavBarState extends State<BottomNavBar> {
 
     return GestureDetector(
       onTap: () => widget.onTap(index),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(
-            _getIconForIndex(index),
-            color: isSelected
-                ? const Color.fromARGB(222, 108, 159, 150)
-                : Colors.grey,
-          ),
-          const SizedBox(height: 4),
-          Text(
-            _getLabelForIndex(index),
-            style: TextStyle(
-              color: isSelected
-                  ? const Color.fromARGB(222, 108, 159, 150)
-                  : Colors.grey,
-              fontSize: 12,
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.easeInOut,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(
+              _icons[index],
+              color: isSelected ? widget.selectedColor : widget.unselectedColor,
+              size: isSelected ? 28 : 24, // Animate icon size
             ),
-          ),
-        ],
+            const SizedBox(height: 4),
+            Text(
+              _labels[index],
+              style: TextStyle(
+                color:
+                    isSelected ? widget.selectedColor : widget.unselectedColor,
+                fontSize: isSelected ? 12 : 11, // Animate font size
+                fontWeight: FontWeight.w300,
+              ),
+            ),
+          ],
+        ),
       ),
     );
-  }
-
-  IconData _getIconForIndex(int index) {
-    switch (index) {
-      case 0:
-        return Icons.calculate;
-      case 1:
-        return Icons.sync;
-      case 2:
-        return Icons.home;
-      case 3:
-        return Icons.animation;
-      case 4:
-        return Icons.person;
-      default:
-        return Icons.error;
-    }
-  }
-
-  String _getLabelForIndex(int index) {
-    switch (index) {
-      case 0:
-        return 'Calculator';
-      case 1:
-        return 'Converter';
-      case 2:
-        return 'Home';
-      case 3:
-        return 'Patient';
-      case 4:
-        return 'Profile';
-      default:
-        return '';
-    }
   }
 }

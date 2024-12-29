@@ -15,7 +15,7 @@ class _LidocaineState extends State<Lidocaine> {
   Map<String, double>? dripRateOption1;
   Map<String, double>? dripRateOption2;
 
-      bool showAddTreatmentButton = false; // Show Add Treatment button
+  bool showAddTreatmentButton = false; // Show Add Treatment button
 
   void calculateResults() {
     final double weight = double.tryParse(_weightController.text) ?? 0;
@@ -23,7 +23,7 @@ class _LidocaineState extends State<Lidocaine> {
     if (weight > 0) {
       final calculator = LidocaineCalculator(weight);
 
-          showAddTreatmentButton = true; // Show Add Treatment button
+      showAddTreatmentButton = true; // Show Add Treatment button
 
       setState(() {
         bolusInjection = calculator.calculateBolusInjection();
@@ -194,14 +194,10 @@ class _LidocaineState extends State<Lidocaine> {
                     ]),
                   ],
                 ),
-                         SizedBox(height: 16),
+                SizedBox(height: 16),
                 if (showAddTreatmentButton)
                   AddTreatmentButton(
-                    onTreatmentAdded: () {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text('Treatment process completed.')),
-                      );
-                    },
+                    onTreatmentAdded: () {},
                   ),
               ],
             ],

@@ -2,113 +2,94 @@ import 'package:flutter/material.dart';
 import 'package:vetdose/converter%20screen/large_animal.dart';
 import 'package:vetdose/converter%20screen/small_animal.dart';
 import 'package:vetdose/main%20page/controller.dart';
-import 'package:vetdose/bottom_nav_bar.dart'; // Ensure the BottomNavBar is imported correctly
+import 'package:vetdose/bottom_nav_bar.dart';
 
-class ConverterScreen extends StatefulWidget {
+class ConverterScreen extends StatelessWidget {
   final Controller controller;
+  final int currentIndex;
 
-  ConverterScreen({required this.controller});
-
-  @override
-  _ConverterScreenState createState() => _ConverterScreenState();
-}
-
-class _ConverterScreenState extends State<ConverterScreen> {
-  int _currentIndex = 1; // Index for the ConverterScreen
-
-  void _onNavBarTap(int index) {
-    setState(() {
-      _currentIndex = index;
-    });
-
-    // Handle navigation based on index
-    if (index == 0) {
-      Navigator.pushNamed(context, '/home'); // Adjust route as needed
-    } else if (index == 1) {
-      // Stay on the ConverterScreen
-    } else if (index == 2) {
-      Navigator.pushNamed(context, '/profile'); // Adjust route as needed
-    }
-  }
+  ConverterScreen({required this.controller, required this.currentIndex});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Animal Converter'),
-        centerTitle: true,
+        title: const Text('Animal Converter'),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
+      body: Center(
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisSize: MainAxisSize.min,
           children: [
+            // Small Animal Option
             GestureDetector(
               onTap: () {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (context) => SmallAnimalConverterOptions()),
+                    builder: (context) => SmallAnimalConverterOptions(),
+                  ),
                 );
               },
               child: Container(
                 height: 100,
-                width: double.infinity,
+                width: MediaQuery.of(context).size.width * 0.8,
                 decoration: BoxDecoration(
-                  color: Colors.grey[300],
+                  color: Colors.white,
                   borderRadius: BorderRadius.circular(10),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.grey.withOpacity(0.5),
-                      spreadRadius: 2,
-                      blurRadius: 5,
-                      offset: Offset(0, 3), // Shadow position
+                      color: Colors.grey.withOpacity(0.2),
+                      spreadRadius: 1,
+                      blurRadius: 1,
+                      offset: const Offset(0, 3),
                     ),
                   ],
                 ),
-                child: Center(
+                child: const Center(
                   child: Text(
                     'Small Animal',
                     style: TextStyle(
-                      fontSize: 18,
+                      fontSize: 20,
                       fontWeight: FontWeight.bold,
-                      color: Colors.black87,
+                      color: Colors.teal,
                     ),
                   ),
                 ),
               ),
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
+            // Large Animal Option
             GestureDetector(
               onTap: () {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (context) => LargeAnimalConverter()),
+                    builder: (context) => LargeAnimalConverter(),
+                  ),
                 );
               },
               child: Container(
                 height: 100,
-                width: double.infinity,
+                width: MediaQuery.of(context).size.width * 0.8,
                 decoration: BoxDecoration(
-                  color: Colors.grey[300],
+                  color: Colors.white,
                   borderRadius: BorderRadius.circular(10),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.grey.withOpacity(0.5),
-                      spreadRadius: 2,
-                      blurRadius: 5,
-                      offset: Offset(0, 3), // Shadow position
+                      color: Colors.grey.withOpacity(0.2),
+                      spreadRadius: 1,
+                      blurRadius: 2,
+                      offset: const Offset(0, 3),
                     ),
                   ],
                 ),
-                child: Center(
+                child: const Center(
                   child: Text(
                     'Large Animal',
                     style: TextStyle(
-                      fontSize: 18,
+                      fontSize: 20,
                       fontWeight: FontWeight.bold,
-                      color: Colors.black87,
+                      color: Colors.teal,
                     ),
                   ),
                 ),
@@ -118,8 +99,10 @@ class _ConverterScreenState extends State<ConverterScreen> {
         ),
       ),
       bottomNavigationBar: BottomNavBar(
-        currentIndex: _currentIndex,
-        onTap: _onNavBarTap,
+        currentIndex: currentIndex,
+        onTap: (index) {
+          controller.onTabTapped(index, context);
+        },
       ),
     );
   }

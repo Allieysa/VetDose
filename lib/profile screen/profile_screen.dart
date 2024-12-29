@@ -7,8 +7,11 @@ import 'package:vetdose/main page/controller.dart';
 
 class ProfileScreen extends StatefulWidget {
   final Controller controller;
+  final int currentIndex; // Add currentIndex parameter
 
-  const ProfileScreen({Key? key, required this.controller}) : super(key: key);
+  const ProfileScreen(
+      {Key? key, required this.controller, required this.currentIndex})
+      : super(key: key);
 
   @override
   _ProfileScreenState createState() => _ProfileScreenState();
@@ -17,18 +20,6 @@ class ProfileScreen extends StatefulWidget {
 class _ProfileScreenState extends State<ProfileScreen> {
   final User? currentUser =
       FirebaseAuth.instance.currentUser; // Get current user
-
-  int _currentIndex = 4; // Index for Profile in BottomNavBar
-
-  void _onNavBarTap(int index) {
-    if (index != _currentIndex) {
-      widget.controller
-          .onTabTapped(index, context); // Use Controller for navigation
-      setState(() {
-        _currentIndex = index;
-      });
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -170,8 +161,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
         ),
       ),
       bottomNavigationBar: BottomNavBar(
-        currentIndex: _currentIndex,
-        onTap: _onNavBarTap,
+        currentIndex: widget.currentIndex, // Use widget.currentIndex
+        onTap: (index) => widget.controller.onTabTapped(index, context),
       ),
     );
   }

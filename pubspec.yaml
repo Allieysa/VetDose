@@ -1,8 +1,7 @@
 name: vetdose
 description: "A new Flutter project."
-# The following line prevents the package from being accidentally published to
-# pub.dev using `flutter pub publish`. This is preferred for private packages.
-publish_to: "none" # Remove this line if you wish to publish to pub.dev
+# Prevent the package from being accidentally published to pub.dev.
+publish_to: "none" 
 
 version: 1.0.0+1
 
@@ -15,8 +14,7 @@ dependencies:
   video_player: ^2.2.19
   chewie: ^1.8.5
 
-  # The following adds the Cupertino Icons font to your application.
-  # Use with the CupertinoIcons class for iOS style icons.
+  # Cupertino Icons for iOS style icons.
   cupertino_icons: ^1.0.8
   firebase_auth: ^5.3.1
   cloud_firestore: ^5.4.4
@@ -39,11 +37,8 @@ flutter_icons:
   android: true
   image_path: "assets/app_logo.png"
 
-# For information on the generic Dart part of this file, see the
-# following page: https://dart.dev/tools/pub/pubspec
-
-# The following section is specific to Flutter packages.
 flutter:
+  uses-material-design: true
   assets:
     - assets/test.png
     - assets/splash_logo.gif
@@ -51,7 +46,3 @@ flutter:
     - assets/cat.png
     - assets/dog.png
 
-  # The following line ensures that the Material Icons font is
-  # included with your application, so that you can use the icons in
-  # the material Icons class.
-  uses-material-design: true

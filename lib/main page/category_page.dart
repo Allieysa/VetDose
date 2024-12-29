@@ -112,12 +112,13 @@ class _CategoryPageState extends State<CategoryPage> {
 
                     final doses = snapshot.data!;
                     return Card(
-                      margin: const EdgeInsets.all(8),
+                      color: Colors.white,
+                      margin: const EdgeInsets.all(16),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(10),
                       ),
                       child: Padding(
-                        padding: const EdgeInsets.all(16.0),
+                        padding: const EdgeInsets.all(10.0),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
@@ -137,7 +138,7 @@ class _CategoryPageState extends State<CategoryPage> {
                                 color: Colors.grey,
                               ),
                             ),
-                            const SizedBox(height: 12),
+                            const SizedBox(height: 10),
                             for (var doseEntry in doses.entries)
                               Container(
                                 width: double.infinity,
@@ -145,9 +146,13 @@ class _CategoryPageState extends State<CategoryPage> {
                                     vertical: 12, horizontal: 12),
                                 margin: const EdgeInsets.only(top: 8),
                                 decoration: BoxDecoration(
-                                  color:
-                                      const Color.fromARGB(113, 164, 252, 237),
-                                  borderRadius: BorderRadius.circular(8),
+                                  border: Border.all(
+                                    color:
+                                        Colors.green.shade800, // Border color
+                                    width: 1.0, // Border thickness
+                                  ),
+                                  borderRadius: BorderRadius.circular(
+                                      8), // Rounded corners
                                 ),
                                 child: Center(
                                   child: RichText(
@@ -155,7 +160,7 @@ class _CategoryPageState extends State<CategoryPage> {
                                       text: '${doseEntry.key}: ',
                                       style: const TextStyle(
                                         fontSize: 14,
-                                        color: Colors.black, // Dose key color
+                                        color: Colors.black54, // Dose key color
                                         fontWeight: FontWeight.bold,
                                       ),
                                       children: [
@@ -163,10 +168,10 @@ class _CategoryPageState extends State<CategoryPage> {
                                           text:
                                               '${doseEntry.value.toStringAsFixed(2)} $unit',
                                           style: TextStyle(
-                                            fontSize: 14,
+                                            fontSize: 15,
                                             color: Colors
                                                 .green.shade800, // Value color
-                                            fontWeight: FontWeight.normal,
+                                            fontWeight: FontWeight.bold,
                                           ),
                                         ),
                                       ],

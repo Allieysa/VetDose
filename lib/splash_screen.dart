@@ -3,52 +3,48 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'login_screen.dart';
 import 'package:vetdose/main page/main_screen.dart';
 import 'package:vetdose/main page/controller.dart';
-import 'dart:async';
 
-class SplashScreen extends StatefulWidget {
+class SplashScreen extends StatelessWidget {
   @override
-  _SplashScreenState createState() => _SplashScreenState();
-}
+  Widget build(BuildContext context) {
+    _checkLoginState(context); // Check authentication state
 
-class _SplashScreenState extends State<SplashScreen> {
-  @override
-  void initState() {
-    super.initState();
-    // Check the user's authentication state after a delay
-    Timer(Duration(seconds: 3), () {
-      _checkLoginState();
-    });
+    return Scaffold(
+      backgroundColor: Colors.white,
+      body: Center(
+        child: Image.asset(
+          'assets/splash_logo.gif',
+          fit: BoxFit.cover,
+          errorBuilder: (context, error, stackTrace) => Icon(
+            Icons.error,
+            size: 80,
+            color: Colors.red,
+          ), // Fallback if image is not found
+        ),
+      ),
+    );
   }
 
-  void _checkLoginState() {
+  void _checkLoginState(BuildContext context) async {
+    await Future.delayed(Duration(seconds: 2)); // Simulate splash screen delay
     final user = FirebaseAuth.instance.currentUser;
 
     if (user != null) {
-      // User is logged in, navigate to MainScreen
-      final controller = Controller(); // Create a Controller instance
+      // Navigate to MainScreen if user is logged in
+      final controller = Controller(); // Initialize controller
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
-          builder: (context) => MainScreen(controller: controller),
+          builder: (context) =>
+              MainScreen(controller: controller, currentIndex: 2),
         ),
       );
     } else {
-      // User is not logged in, navigate to LoginScreen
+      // Navigate to LoginScreen if user is not logged in
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (context) => LoginScreen()),
       );
     }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      body: Center(
-        child:
-            Image.asset('assets/splash_logo.gif'), // Display the animated GIF
-      ),
-    );
   }
 }

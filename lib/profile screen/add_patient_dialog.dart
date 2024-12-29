@@ -32,8 +32,8 @@ void showAddPatientDialog(BuildContext context, Function onPatientAdded) {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              _buildInputField('Animal type', typeController),
-              _buildInputField('Animal name', nameController),
+              _buildInputField('Animal Type', typeController),
+              _buildInputField('Animal Name', nameController),
               _buildInputField('Age', ageController),
               _buildInputField('Weight', weightController),
               _buildInputField('Symptoms', symptomsController),
@@ -47,27 +47,49 @@ void showAddPatientDialog(BuildContext context, Function onPatientAdded) {
           ),
           ElevatedButton(
             onPressed: () async {
-              User? user = _auth.currentUser;
-              if (user != null) {
-                await _firestore
-                    .collection('users')
-                    .doc(user.uid)
-                    .collection('patient_history')
-                    .add({
-                  'type': typeController.text,
-                  'name': nameController.text,
-                  'age': ageController.text,
-                  'weight': weightController.text,
-                  'symptoms': symptomsController.text,
-                  'timestamp': FieldValue.serverTimestamp(),
-                });
-
+              if (typeController.text.trim().isEmpty ||
+                  nameController.text.trim().isEmpty ||
+                  ageController.text.trim().isEmpty ||
+                  weightController.text.trim().isEmpty ||
+                  symptomsController.text.trim().isEmpty) {
                 ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text('Patient added successfully!')),
+                  SnackBar(content: Text('All fields are required!')),
                 );
+                return;
+              }
 
-                onPatientAdded(); // Callback to refresh data
-                Navigator.pop(context);
+              try {
+                User? user = _auth.currentUser;
+
+                if (user != null) {
+                  await _firestore
+                      .collection('users')
+                      .doc(user.uid)
+                      .collection('patient_history')
+                      .add({
+                    'type': typeController.text,
+                    'name': nameController.text,
+                    'age': ageController.text,
+                    'weight': weightController.text,
+                    'symptoms': symptomsController.text,
+                    'timestamp': FieldValue.serverTimestamp(),
+                  });
+
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text('Patient added successfully!')),
+                  );
+
+                  onPatientAdded(); // Callback to refresh data
+                  Navigator.pop(context);
+                } else {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text('No user is logged in!')),
+                  );
+                }
+              } catch (e) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text('Error: $e')),
+                );
               }
             },
             child: Text('Save'),

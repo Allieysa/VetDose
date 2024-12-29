@@ -7,8 +7,9 @@ import 'package:math_expressions/math_expressions.dart';
 
 class CalculatorScreen extends StatefulWidget {
   final Controller controller;
+  final int currentIndex;
 
-  CalculatorScreen({required this.controller});
+  CalculatorScreen({required this.controller, required this.currentIndex});
 
   @override
   _CalculatorScreenState createState() => _CalculatorScreenState();
@@ -52,7 +53,6 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
   String calculateResult(String input) {
     try {
       String finalInput = input.replaceAll('×', '*').replaceAll('÷', '/');
-
       Parser parser = Parser();
       Expression exp = parser.parse(finalInput);
       ContextModel cm = ContextModel();
@@ -73,35 +73,32 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Calculator'),
-        centerTitle: true,
       ),
       bottomNavigationBar: BottomNavBar(
-        currentIndex: 3,
+        currentIndex: widget.currentIndex, // Use widget.currentIndex
         onTap: (index) {
           widget.controller.onTabTapped(index, context);
         },
       ),
       body: Column(
         children: [
-// Result and Input Display
+          // Result and Input Display
           Expanded(
             flex: 2,
             child: Padding(
               padding: const EdgeInsets.all(16.0),
               child: Column(
-                crossAxisAlignment:
-                    CrossAxisAlignment.stretch, // Stretch to full width
+                crossAxisAlignment: CrossAxisAlignment.stretch,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Align(
-                    alignment:
-                        Alignment.centerRight, // Ensure alignment to the right
+                    alignment: Alignment.centerRight,
                     child: SingleChildScrollView(
                       scrollDirection: Axis.horizontal,
-                      reverse: true, // Ensure it starts at the right side
+                      reverse: true,
                       child: Text(
                         result,
-                        textAlign: TextAlign.right, // Align text to the right
+                        textAlign: TextAlign.right,
                         style: TextStyle(
                             fontSize: 48, fontWeight: FontWeight.bold),
                       ),
@@ -109,14 +106,13 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
                   ),
                   SizedBox(height: 10),
                   Align(
-                    alignment:
-                        Alignment.centerRight, // Ensure alignment to the right
+                    alignment: Alignment.centerRight,
                     child: SingleChildScrollView(
                       scrollDirection: Axis.horizontal,
-                      reverse: true, // Ensure input starts at the right side
+                      reverse: true,
                       child: Text(
                         input,
-                        textAlign: TextAlign.right, // Align text to the right
+                        textAlign: TextAlign.right,
                         style: TextStyle(fontSize: 24, color: Colors.black54),
                       ),
                     ),
@@ -131,9 +127,9 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
             child: GridView.builder(
               gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 4,
-                mainAxisSpacing: 8.0,
-                crossAxisSpacing: 8.0,
-                childAspectRatio: 1.2, // Adjust button size
+                mainAxisSpacing: 0.0,
+                crossAxisSpacing: 0.0,
+                childAspectRatio: 1.2,
               ),
               itemCount: arrangedButtons.length,
               itemBuilder: (context, index) {
@@ -144,9 +140,9 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
                   text: button,
                   onTap: () => onButtonPressed(button),
                   color: isOperator
-                      ? const Color.fromARGB(200, 157, 224, 207)
+                      ? Colors.teal
                       : button == 'AC'
-                          ? const Color.fromARGB(255, 137, 233, 202)
+                          ? const Color.fromARGB(255, 90, 194, 186)
                           : Colors.white,
                   textColor: isOperator || button == 'AC'
                       ? Colors.white
@@ -184,13 +180,7 @@ const List<String> arrangedButtons = [
   '=',
 ];
 
-const List<String> operators = [
-  '÷',
-  '×',
-  '-',
-  '+',
-  '=',
-];
+const List<String> operators = ['÷', '×', '-', '+', '='];
 
 class CalculatorButton extends StatelessWidget {
   final String text;

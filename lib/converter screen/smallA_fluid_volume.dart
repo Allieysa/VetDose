@@ -21,7 +21,7 @@ class _FluidVolumePageState extends State<FluidVolumePage> {
   double microdripMorningRateCat = 0.0;
   double microdripNightRateCat = 0.0;
 
-bool showAddTreatmentButton = false; // Show Add Treatment button
+  bool showAddTreatmentButton = false; // Show Add Treatment button
 
   void calculateResults() {
     double weight = double.tryParse(weightController.text) ?? 0.0;
@@ -68,7 +68,6 @@ bool showAddTreatmentButton = false; // Show Add Treatment button
     return Scaffold(
       appBar: AppBar(
         title: Text('Fluid Volume'),
-        centerTitle: true,
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -114,50 +113,99 @@ bool showAddTreatmentButton = false; // Show Add Treatment button
               SizedBox(height: 20),
               ElevatedButton(
                 onPressed: calculateResults,
-                child: Text('Calculate'),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor:
+                      Colors.teal, // Correct property for background color
+                  foregroundColor:
+                      Colors.white, // Correct property for text color
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12), // Rounded corners
+                  ),
+                  padding:
+                      EdgeInsets.symmetric(horizontal: 12.0, vertical: 6.0),
+                ),
+                child: Text(
+                  'Calculate',
+                  style: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
               ),
               SizedBox(height: 20),
-              Text(
-                'Results for Dogs:',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-              ),
-              Text(
-                  'Total Fluid Requirement: ${totalFluidRequirementDog.toStringAsFixed(2)} mL/day'),
-              Text(
-                  'Maintenance Only Macrodrip: ${maintenanceOnlyMacrodripDog.toStringAsFixed(2)} drops/min'),
-              Text(
-                  'Infusion Pump Rate (24 hrs): ${infusionPumpRateDog.toStringAsFixed(2)} mL/hr'),
-              SizedBox(height: 20),
-              Text(
-                'Results for Cats:',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-              ),
-              Text(
-                  'Total Fluid Requirement: ${totalFluidRequirementCat.toStringAsFixed(2)} mL/day'),
-              Text(
-                  'Maintenance Only Microdrip: ${maintenanceOnlyMicrodripCat.toStringAsFixed(2)} drops/min'),
-              Text(
-                  'Infusion Pump Rate (24 hrs): ${infusionPumpRateCat.toStringAsFixed(2)} mL/hr'),
-              Text(
-                  'Microdrip Morning Rate: ${microdripMorningRateCat.toStringAsFixed(2)} drops/min'),
-              Text(
-                  'Microdrip Night Rate: ${microdripNightRateCat.toStringAsFixed(2)} drops/min'),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  // Results for Dogs
+                  Container(
+                    padding: const EdgeInsets.all(16.0),
+                    margin: const EdgeInsets.only(
+                        bottom: 20), // Spacing between sections
+                    decoration: BoxDecoration(
+                      color: Colors.teal.shade50, // Light background
+                      borderRadius:
+                          BorderRadius.circular(12), // Rounded corners
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Results for Dogs:',
+                          style: TextStyle(
+                              fontSize: 18, fontWeight: FontWeight.bold),
+                        ),
+                        const SizedBox(height: 8),
+                        Text(
+                            'Total Fluid Requirement: ${totalFluidRequirementDog.toStringAsFixed(2)} mL/day'),
+                        Text(
+                            'Maintenance Only Macrodrip: ${maintenanceOnlyMacrodripDog.toStringAsFixed(2)} drops/min'),
+                        Text(
+                            'Infusion Pump Rate (24 hrs): ${infusionPumpRateDog.toStringAsFixed(2)} mL/hr'),
+                      ],
+                    ),
+                  ),
 
-                                     SizedBox(height: 16),
+                  // Results for Cats
+                  Container(
+                    padding: const EdgeInsets.all(16.0),
+                    decoration: BoxDecoration(
+                      color: Colors.teal.shade50, // Light background
+                      borderRadius:
+                          BorderRadius.circular(12), // Rounded corners
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Results for Cats:',
+                          style: TextStyle(
+                              fontSize: 18, fontWeight: FontWeight.bold),
+                        ),
+                        const SizedBox(height: 8),
+                        Text(
+                            'Total Fluid Requirement: ${totalFluidRequirementCat.toStringAsFixed(2)} mL/day'),
+                        Text(
+                            'Maintenance Only Microdrip: ${maintenanceOnlyMicrodripCat.toStringAsFixed(2)} drops/min'),
+                        Text(
+                            'Infusion Pump Rate (24 hrs): ${infusionPumpRateCat.toStringAsFixed(2)} mL/hr'),
+                        Text(
+                            'Microdrip Morning Rate: ${microdripMorningRateCat.toStringAsFixed(2)} drops/min'),
+                        Text(
+                            'Microdrip Night Rate: ${microdripNightRateCat.toStringAsFixed(2)} drops/min'),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+              SizedBox(height: 16),
               if (showAddTreatmentButton)
                 AddTreatmentButton(
-                  onTreatmentAdded: () {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text('Treatment process completed.')),
-                    );
-                  },
+                  onTreatmentAdded: () {},
                 ),
             ],
           ),
-          
         ),
       ),
-      
     );
   }
 }

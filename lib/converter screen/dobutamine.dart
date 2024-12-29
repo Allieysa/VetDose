@@ -154,9 +154,9 @@ class _DobutamineState extends State<Dobutamine> {
                                 padding: EdgeInsets.all(8.0),
                                 child: Text('drop/sec',
                                     style: TextStyle(
-                                        fontSize: 10,
-                                        fontWeight: FontWeight.bold,
-                                        )),
+                                      fontSize: 10,
+                                      fontWeight: FontWeight.bold,
+                                    )),
                               ),
                               Padding(
                                 padding: EdgeInsets.all(8.0),
@@ -205,13 +205,7 @@ class _DobutamineState extends State<Dobutamine> {
                       SizedBox(height: 16),
                       if (showAddTreatmentButton)
                         AddTreatmentButton(
-                          onTreatmentAdded: () {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                  content:
-                                      Text('Treatment process completed.')),
-                            );
-                          },
+                          onTreatmentAdded: () {},
                         )
                     ],
                   ),
