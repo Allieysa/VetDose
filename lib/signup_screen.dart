@@ -69,66 +69,151 @@ class _SignUpScreenState extends State<SignUpScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Sign Up'),
-      ),
+      backgroundColor: const Color.fromARGB(255, 241, 250, 250),
       body: SafeArea(
         child: SingleChildScrollView(
           child: Padding(
             padding: EdgeInsets.all(16.0),
             child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
+                // Title and Welcome Message
+                SizedBox(height: 30),
                 Text(
                   'Create an Account',
-                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                  style: TextStyle(
+                    fontSize: 28,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.teal.shade700,
+                  ),
                 ),
-                SizedBox(height: 20),
+                SizedBox(height: 10),
+                Text(
+                  'Join us and start your journey!',
+                  style: TextStyle(
+                    fontSize: 16,
+                    color: Colors.teal.shade600,
+                  ),
+                ),
+                SizedBox(height: 40),
+
+                // Input Fields
                 TextField(
                   controller: _usernameController,
                   decoration: InputDecoration(
-                    labelText: 'Username',
-                    border: OutlineInputBorder(),
+                    hintText: 'Username',
+                    filled: true,
+                    fillColor: Colors.white,
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                      borderSide: BorderSide.none,
+                    ),
+                    prefixIcon: Icon(Icons.person, color: Colors.teal),
                   ),
+                  style: TextStyle(fontSize: 16),
                 ),
                 SizedBox(height: 20),
                 TextField(
                   controller: _emailController,
                   decoration: InputDecoration(
-                    labelText: 'Email',
-                    border: OutlineInputBorder(),
+                    hintText: 'Email',
+                    filled: true,
+                    fillColor: Colors.white,
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                      borderSide: BorderSide.none,
+                    ),
+                    prefixIcon: Icon(Icons.email, color: Colors.teal),
                   ),
+                  style: TextStyle(fontSize: 16),
                 ),
                 SizedBox(height: 20),
                 TextField(
                   controller: _passwordController,
                   decoration: InputDecoration(
-                    labelText: 'Password',
-                    border: OutlineInputBorder(),
+                    hintText: 'Password',
+                    filled: true,
+                    fillColor: Colors.white,
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                      borderSide: BorderSide.none,
+                    ),
+                    prefixIcon: Icon(Icons.lock, color: Colors.teal),
                   ),
                   obscureText: true,
+                  style: TextStyle(fontSize: 16),
                 ),
                 SizedBox(height: 20),
                 TextField(
                   controller: _confirmPasswordController,
                   decoration: InputDecoration(
-                    labelText: 'Confirm Password',
-                    border: OutlineInputBorder(),
+                    hintText: 'Confirm Password',
+                    filled: true,
+                    fillColor: Colors.white,
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                      borderSide: BorderSide.none,
+                    ),
+                    prefixIcon: Icon(Icons.lock_outline, color: Colors.teal),
                   ),
                   obscureText: true,
+                  style: TextStyle(fontSize: 16),
                 ),
-                SizedBox(height: 10),
+                SizedBox(height: 30),
+
+                // Sign-Up Button
                 _isLoading
                     ? CircularProgressIndicator()
                     : ElevatedButton(
                         onPressed: _signUp,
-                        child: Text('Sign Up'),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.teal.shade400,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          padding: EdgeInsets.symmetric(
+                              horizontal: 100, vertical: 16),
+                        ),
+                        child: Text(
+                          'Sign Up',
+                          style: TextStyle(fontSize: 16, color: Colors.white),
+                        ),
                       ),
-                SizedBox(height: 10),
+
+                // Error Message
                 if (_errorMessage.isNotEmpty)
-                  Text(
-                    _errorMessage,
-                    style: TextStyle(color: Colors.red),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 20.0),
+                    child: Text(
+                      _errorMessage,
+                      style: TextStyle(color: Colors.red),
+                    ),
                   ),
+
+                // Navigate to Login Screen
+                SizedBox(height: 20),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text('Already have an account? '),
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => LoginScreen()),
+                        );
+                      },
+                      child: Text(
+                        'Log in',
+                        style: TextStyle(
+                          color: Colors.teal.shade700,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
               ],
             ),
           ),

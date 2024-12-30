@@ -146,25 +146,42 @@ class _PatientHistoryScreenState extends State<PatientHistoryScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Patients List'),
-        backgroundColor: Colors.white,
-        elevation: 0,
-        actions: [
-          ElevatedButton(
-            onPressed: _showAddPatientDialog,
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.grey[300],
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(20),
+      backgroundColor: const Color.fromARGB(255, 241, 250, 250),
+      appBar: PreferredSize(
+        preferredSize: Size.fromHeight(60.0),
+        child: AppBar(
+          title: Text(
+            'Patients List',
+            style: TextStyle(color: Colors.black),
+          ),
+          backgroundColor: const Color.fromARGB(255, 241, 250, 250),
+          elevation: 0,
+          actions: [
+            Padding(
+              padding: const EdgeInsets.only(
+                  right: 20.0), // Adjust the right padding
+              child: ElevatedButton(
+                onPressed: _showAddPatientDialog,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.teal.shade300,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  padding: EdgeInsets.symmetric(
+                      horizontal: 12,
+                      vertical: 6), // Reduce padding inside the button
+                  minimumSize:
+                      Size(80, 36), // Set minimum size (width x height)
+                ),
+                child: Text(
+                  'Add Patient',
+                  style: TextStyle(
+                      color: Colors.white, fontSize: 12), // Adjust font size
+                ),
               ),
             ),
-            child: Text(
-              'Add Patient',
-              style: TextStyle(color: Colors.black),
-            ),
-          ),
-        ],
+          ],
+        ),
       ),
       body: StreamBuilder<QuerySnapshot>(
         stream: _firestore
@@ -194,33 +211,45 @@ class _PatientHistoryScreenState extends State<PatientHistoryScreen> {
               final patient = patientDoc.data() as Map<String, dynamic>;
 
               return Card(
-                color: Colors.grey[300],
-                margin: EdgeInsets.all(8.0),
+                color: Colors.white,
+                margin: EdgeInsets.all(15.0),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: ListTile(
-                  contentPadding: EdgeInsets.all(16),
+                  contentPadding:
+                      EdgeInsets.symmetric(horizontal: 25.0, vertical: 10.0),
                   title: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
                         patient['name'] ?? '',
-                        style: TextStyle(fontWeight: FontWeight.bold),
+                        style: TextStyle(
+                            fontSize: 18, fontWeight: FontWeight.bold),
                       ),
                       Text(
                         patient['type'] ?? '',
-                        style: TextStyle(fontWeight: FontWeight.bold),
+                        style: TextStyle(
+                            fontSize: 18, fontWeight: FontWeight.bold),
                       ),
                     ],
                   ),
                   subtitle: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      SizedBox(height: 8),
-                      Text('Age: ${patient['age']}'),
-                      Text('Weight: ${patient['weight']}'),
-                      Text('Symptoms: ${patient['symptoms']}'),
+                      SizedBox(height: 5), // Space above the first text
+                      Text(
+                        'Age: ${patient['age']}',
+                        style: TextStyle(fontSize: 14), // Adjust font size
+                      ),
+                      Text(
+                        'Weight: ${patient['weight']}',
+                        style: TextStyle(fontSize: 14), // Adjust font size
+                      ),
+                      Text(
+                        'Symptoms: ${patient['symptoms']}',
+                        style: TextStyle(fontSize: 14), // Adjust font size
+                      ),
                     ],
                   ),
                   onTap: () {

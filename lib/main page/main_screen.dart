@@ -86,7 +86,9 @@ class _MainScreenState extends State<MainScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        backgroundColor: const Color.fromARGB(255, 241, 250, 250),
         appBar: AppBar(
+          backgroundColor: const Color.fromARGB(255, 241, 250, 250),
           title: Text(
             'Hello, ${currentUser?.displayName ?? 'User'}!',
             style: TextStyle(

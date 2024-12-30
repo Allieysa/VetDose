@@ -13,7 +13,9 @@ class ConverterScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: const Color.fromARGB(255, 241, 250, 250),
       appBar: AppBar(
+        backgroundColor: const Color.fromARGB(255, 241, 250, 250),
         title: const Text('Animal Converter'),
       ),
       body: Center(

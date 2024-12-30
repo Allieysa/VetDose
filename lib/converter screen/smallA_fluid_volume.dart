@@ -67,7 +67,15 @@ class _FluidVolumePageState extends State<FluidVolumePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Fluid Volume'),
+        title: Align(
+          alignment: Alignment.centerLeft, // Aligns the text to the right
+          child: Text(
+            'Fluid Volume',
+            style: TextStyle(
+              fontSize: 20, // Adjust the font size as needed
+            ),
+          ),
+        ),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -75,39 +83,53 @@ class _FluidVolumePageState extends State<FluidVolumePage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              TextField(
-                controller: weightController,
-                keyboardType: TextInputType.number,
-                decoration: InputDecoration(
-                  labelText: 'Enter Body Weight (kg)',
-                  border: OutlineInputBorder(),
+              Card(
+                color: Colors.white,
+                elevation: 2, // Add elevation for shadow effect
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
                 ),
-              ),
-              SizedBox(height: 10),
-              TextField(
-                controller: dehydrationController,
-                keyboardType: TextInputType.number,
-                decoration: InputDecoration(
-                  labelText: 'Dehydration (%)',
-                  border: OutlineInputBorder(),
-                ),
-              ),
-              SizedBox(height: 10),
-              TextField(
-                controller: diuresisRateController,
-                keyboardType: TextInputType.number,
-                decoration: InputDecoration(
-                  labelText: 'Diuresis Rate',
-                  border: OutlineInputBorder(),
-                ),
-              ),
-              SizedBox(height: 10),
-              TextField(
-                controller: fluidLossController,
-                keyboardType: TextInputType.number,
-                decoration: InputDecoration(
-                  labelText: 'Fluid Loss',
-                  border: OutlineInputBorder(),
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
+                    children: [
+                      TextField(
+                        controller: weightController,
+                        keyboardType: TextInputType.number,
+                        decoration: InputDecoration(
+                          labelText: 'Enter Body Weight (kg)',
+                          border: OutlineInputBorder(),
+                        ),
+                      ),
+                      SizedBox(height: 10),
+                      TextField(
+                        controller: dehydrationController,
+                        keyboardType: TextInputType.number,
+                        decoration: InputDecoration(
+                          labelText: 'Dehydration (%)',
+                          border: OutlineInputBorder(),
+                        ),
+                      ),
+                      SizedBox(height: 10),
+                      TextField(
+                        controller: diuresisRateController,
+                        keyboardType: TextInputType.number,
+                        decoration: InputDecoration(
+                          labelText: 'Diuresis Rate',
+                          border: OutlineInputBorder(),
+                        ),
+                      ),
+                      SizedBox(height: 10),
+                      TextField(
+                        controller: fluidLossController,
+                        keyboardType: TextInputType.number,
+                        decoration: InputDecoration(
+                          labelText: 'Fluid Loss',
+                          border: OutlineInputBorder(),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
               SizedBox(height: 20),

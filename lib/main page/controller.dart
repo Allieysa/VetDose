@@ -11,7 +11,7 @@ class Controller {
 
   // Manage tab changes with navigation
   void onTabTapped(int index, BuildContext context) {
-    if (index == currentIndex) return; // Prevent navigating to the same screen
+    // if (index == currentIndex) return; // Prevent navigating to the same screen
 
     currentIndex = index; // Update the current index
     Navigator.pushReplacementNamed(context, _getRouteName(index));

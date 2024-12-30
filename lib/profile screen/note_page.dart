@@ -99,6 +99,7 @@ class _NotePageState extends State<NotePage> {
       }
     }
   }
+
   //edit note
   Future<void> editNote(String noteId, String newContent) async {
     String userId = FirebaseAuth.instance.currentUser!.uid;
@@ -118,7 +119,6 @@ class _NotePageState extends State<NotePage> {
     }
   }
 
-
   Future<void> deleteNoteAtIndex(String noteId) async {
     String userId = _auth.currentUser!.uid;
     await _firestore
@@ -129,7 +129,8 @@ class _NotePageState extends State<NotePage> {
         .delete();
     print('Note deleted: $noteId');
   }
-void showEditNoteDialog(String noteId, String currentContent) {
+
+  void showEditNoteDialog(String noteId, String currentContent) {
     final TextEditingController editController =
         TextEditingController(text: currentContent);
 
@@ -201,130 +202,142 @@ void showEditNoteDialog(String noteId, String currentContent) {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: !isSearching
-            ? Text('Notes')
-            : TextField(
-                controller: _searchController,
-                onChanged: updateSearchQuery,
-                decoration: InputDecoration(
-                  hintText: 'Search notes...',
-                  border: InputBorder.none,
-                ),
-                style: TextStyle(color: Colors.white, fontSize: 18),
-              ),
-        centerTitle: true,
-        backgroundColor: Colors.blue,
-        actions: [
-          isSearching
-              ? IconButton(
-                  onPressed: stopSearch,
-                  icon: Icon(Icons.clear),
+        backgroundColor: const Color.fromARGB(255, 241, 250, 250),
+        appBar: AppBar(
+          title: isSearching
+              ? TextField(
+                  controller: _searchController,
+                  onChanged: updateSearchQuery,
+                  decoration: InputDecoration(
+                    hintText: 'Search notes...',
+                    border: InputBorder.none,
+                    hintStyle: TextStyle(color: Colors.black),
+                  ),
+                  style: TextStyle(color: Colors.black, fontSize: 18),
                 )
-              : IconButton(
-                  onPressed: startSearch,
-                  icon: Icon(Icons.search),
-                ),
-        ],
-      ),
-      body: Column(
-        children: [
-          Expanded(
-            child: StreamBuilder<QuerySnapshot>(
-              stream: getNotesStream(),
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return Center(child: CircularProgressIndicator());
-                }
+              : Text('Notes'),
+          backgroundColor: const Color.fromARGB(255, 241, 250, 250),
+          actions: [
+            isSearching
+                ? IconButton(
+                    onPressed: stopSearch,
+                    icon: Icon(Icons.clear),
+                  )
+                : IconButton(
+                    onPressed: startSearch,
+                    icon: Icon(Icons.search),
+                  ),
+          ],
+        ),
+        body: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: StreamBuilder<QuerySnapshot>(
+            stream: getNotesStream(),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return Center(child: CircularProgressIndicator());
+              }
 
-                if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-                  return Center(child: Text('No notes found.'));
-                }
+              if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+                return Center(child: Text('No notes found.'));
+              }
 
-                return ListView.builder(
-                  padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                  itemCount: snapshot.data!.docs.length,
-                  itemBuilder: (context, index) {
-                    DocumentSnapshot note = snapshot.data!.docs[index];
-                    String noteId = note.id;
-                    String content = note['content'];
+              return ListView.builder(
+                itemCount: snapshot.data!.docs.length,
+                itemBuilder: (context, index) {
+                  DocumentSnapshot note = snapshot.data!.docs[index];
+                  String noteId = note.id;
+                  String content = note['content'];
 
-                    return Card(
-                      child: ListTile(
-                        title: Text(
-                          content,
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
+                  return Card(
+                    color: Colors.white,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    margin: const EdgeInsets.symmetric(vertical: 8),
+                    elevation: 3,
+                    child: ListTile(
+                      title: Text(
+                        content,
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      subtitle: Text(
+                        note['timestamp'] != null
+                            ? (note['timestamp'] as Timestamp)
+                                .toDate()
+                                .toLocal()
+                                .toString()
+                                .split(' ')[0]
+                            : '',
+                        style: TextStyle(color: Colors.grey),
+                      ),
+                      trailing: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          IconButton(
+                            icon: const Icon(Icons.edit, color: Colors.blue),
+                            onPressed: () =>
+                                showEditNoteDialog(noteId, content),
                           ),
-                        ),
-                        subtitle: Text(
-                          note['timestamp'] != null
-                              ? (note['timestamp'] as Timestamp)
-                                  .toDate()
-                                  .toLocal()
-                                  .toString()
-                                  .split(' ')[0]
-                              : '',
-                          style: TextStyle(color: Colors.grey),
-                        ),
-                         trailing: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            IconButton(
-                               icon: const Icon(Icons.edit, color: Colors.blue),
-                               onPressed: () => showEditNoteDialog(noteId, content),
-                            ),
-                            IconButton(
-                               icon: const Icon(Icons.delete, color: Colors.red),
-                               onPressed: () => showDeleteConfirmationDialog(noteId),
-                            ),
-                          ]
-                        ),
-                      )
-                    );
-                  },
-                );
-              },
-            ),
-          ),
-        ],
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          showDialog(
-            context: context,
-            builder: (context) {
-              return AlertDialog(
-                title: Text('Add New Note'),
-                content: TextField(
-                  controller: _noteController,
-                  decoration: InputDecoration(hintText: 'Enter your note'),
-                ),
-                actions: [
-                  TextButton(
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
-                    child: Text('Cancel'),
-                  ),
-                  ElevatedButton(
-                    onPressed: () {
-                      addNote();
-                      Navigator.pop(context);
-                    },
-                    child: Text('Save'),
-                  ),
-                ],
+                          IconButton(
+                            icon: const Icon(Icons.delete, color: Colors.red),
+                            onPressed: () =>
+                                showDeleteConfirmationDialog(noteId),
+                          ),
+                        ],
+                      ),
+                    ),
+                  );
+                },
               );
             },
-          );
-        },
-        child: Icon(Icons.note_add),
-      ),
-    );
-
-  
-    
+          ),
+        ),
+        floatingActionButton: FloatingActionButton.extended(
+          onPressed: () {
+            showDialog(
+              context: context,
+              builder: (context) {
+                return AlertDialog(
+                  title: Text('Add New Note'),
+                  content: TextField(
+                    controller: _noteController,
+                    decoration: InputDecoration(
+                      hintText: 'Enter your note',
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                    ),
+                  ),
+                  actions: [
+                    TextButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                      child: Text('Cancel'),
+                    ),
+                    ElevatedButton(
+                      onPressed: () {
+                        addNote();
+                        Navigator.pop(context);
+                      },
+                      child: Text('Save'),
+                    ),
+                  ],
+                );
+              },
+            );
+          },
+          icon: Icon(Icons.note_add, color: Colors.white), // White icon
+          label: Text(
+            'Add Note',
+            style: TextStyle(color: Colors.white), // White font color
+          ),
+          backgroundColor:
+              Colors.teal.shade300, // Background color remains the same
+        ));
   }
 }
