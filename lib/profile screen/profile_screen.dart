@@ -4,6 +4,8 @@ import 'package:vetdose/login_screen.dart';
 import 'package:vetdose/profile screen/note_page.dart';
 import 'package:vetdose/bottom_nav_bar.dart';
 import 'package:vetdose/main page/controller.dart';
+import 'package:vetdose/profile%20screen/report_issue_page.dart';
+import 'package:vetdose/profile%20screen/term_and_conditions_page.dart';
 
 class ProfileScreen extends StatefulWidget {
   final Controller controller;
@@ -27,15 +29,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
       appBar: AppBar(
         backgroundColor: const Color.fromARGB(255, 241, 250, 250),
         elevation: 0,
-        title: const Text(
-          'Profile',
-          style: TextStyle(
-            color: Colors.black,
-            fontWeight: FontWeight.bold,
-            fontSize: 20,
-          ),
-        ),
-        centerTitle: false,
       ),
       body: SingleChildScrollView(
         child: Column(
@@ -98,14 +91,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
     return [
       _buildOptionTile(
         context,
-        title: 'Important',
-        icon: Icons.star,
-        onTap: () {
-          // Handle navigation or functionality
-        },
-      ),
-      _buildOptionTile(
-        context,
         title: 'Notes',
         icon: Icons.note,
         onTap: () {
@@ -120,7 +105,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
         title: 'Terms and Conditions',
         icon: Icons.article,
         onTap: () {
-          // Handle navigation or functionality
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => TermsAndConditionsScreen()),
+          );
         },
       ),
       _buildOptionTile(
@@ -128,7 +116,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
         title: 'Report Issue',
         icon: Icons.report_problem,
         onTap: () {
-          // Handle navigation or functionality
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => ReportIssueScreen()),
+          );
         },
       ),
       _buildOptionTile(
@@ -139,6 +130,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           bool? shouldSignOut = await showDialog(
             context: context,
             builder: (context) => AlertDialog(
+              backgroundColor: Colors.white,
               title: const Text('Log Out'),
               content: const Text('Are you sure you want to log out?'),
               actions: [

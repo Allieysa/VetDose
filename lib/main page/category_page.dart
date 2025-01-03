@@ -34,7 +34,17 @@ class _CategoryPageState extends State<CategoryPage> {
     final drugs = FormulaStore.getFormulasByCategory(widget.category);
 
     return Scaffold(
-      appBar: AppBar(title: Text(widget.category)),
+      backgroundColor: Colors.teal[50],
+      appBar: AppBar(
+          backgroundColor: Colors.teal,
+          title: Text(
+            widget.category,
+            style: TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+              fontSize: 20,
+            ),
+          )),
       body: Column(
         children: [
           Padding(

@@ -15,7 +15,20 @@ class AddTreatmentButton extends StatelessWidget {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Select a Patient'),
+          backgroundColor: Colors.teal[50], // Set dialog background color
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12), // Rounded corners
+          ),
+          title: Center(
+            child: Text(
+              'Select a Patient',
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+                color: Colors.teal[800], // Text color to match the theme
+              ),
+            ),
+          ),
           content: StreamBuilder<QuerySnapshot>(
             stream: _firestore
                 .collection('users')
@@ -24,14 +37,35 @@ class AddTreatmentButton extends StatelessWidget {
                 .orderBy('timestamp', descending: true)
                 .snapshots(),
             builder: (context, snapshot) {
-              if (snapshot.hasError) return Text('Error loading patients.');
-              if (!snapshot.hasData) return CircularProgressIndicator();
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return Center(
+                  child: CircularProgressIndicator(color: Colors.teal),
+                );
+              }
+              if (snapshot.hasError) {
+                return Center(
+                  child: Text(
+                    'Error loading patients.',
+                    style: TextStyle(
+                      fontSize: 16,
+                      color: Colors.red,
+                    ),
+                  ),
+                );
+              }
+              if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+                return Center(
+                  child: Text(
+                    'No patients available.',
+                    style: TextStyle(
+                      fontSize: 16,
+                      color: Colors.teal[800],
+                    ),
+                  ),
+                );
+              }
 
               final patients = snapshot.data!.docs;
-
-              if (patients.isEmpty) {
-                return Text('No patients available.');
-              }
 
               return ListView.builder(
                 shrinkWrap: true,
@@ -41,47 +75,52 @@ class AddTreatmentButton extends StatelessWidget {
                   final patientId = patient.id;
                   final patientData = patient.data() as Map<String, dynamic>;
 
-                  return Container(
-                    margin:
-                        EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
-                    padding: EdgeInsets.all(16.0),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(12.0),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.grey.withOpacity(0.3),
-                          spreadRadius: 2,
-                          blurRadius: 5,
-                          offset: Offset(0, 3), // changes position of shadow
-                        ),
-                      ],
-                    ),
-                    child: ListTile(
-                      contentPadding:
-                          EdgeInsets.zero, // Removes default padding
-                      title: Text(
-                        '${patientData['name']}',
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 18.0,
-                        ),
-                      ),
-                      subtitle: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          SizedBox(
-                              height:
-                                  8.0), // Spacing between title and subtitle
-                          Text('Type: ${patientData['type']}'),
-                          Text('Age: ${patientData['age']}'),
-                          Text('Weight: ${patientData['weight']} kg'),
+                  return GestureDetector(
+                    onTap: () {
+                      Navigator.pop(context);
+                      _addTreatment(context, patientId);
+                    },
+                    child: Container(
+                      margin: EdgeInsets.symmetric(vertical: 8.0),
+                      padding: EdgeInsets.all(16.0),
+                      decoration: BoxDecoration(
+                        color: Colors.white, // White background for list items
+                        borderRadius: BorderRadius.circular(12.0),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.grey.withOpacity(0.3),
+                            spreadRadius: 2,
+                            blurRadius: 5,
+                            offset: Offset(0, 3), // Changes position of shadow
+                          ),
                         ],
                       ),
-                      onTap: () {
-                        Navigator.pop(context);
-                        _addTreatment(context, patientId);
-                      },
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            '${patientData['name']}',
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 18.0,
+                              color: Colors.teal[900],
+                            ),
+                          ),
+                          SizedBox(height: 8.0),
+                          Text(
+                            'Type: ${patientData['type']}',
+                            style: TextStyle(color: Colors.teal[800]),
+                          ),
+                          Text(
+                            'Age: ${patientData['age']}',
+                            style: TextStyle(color: Colors.teal[800]),
+                          ),
+                          Text(
+                            'Weight: ${patientData['weight']} kg',
+                            style: TextStyle(color: Colors.teal[800]),
+                          ),
+                        ],
+                      ),
                     ),
                   );
                 },
@@ -91,7 +130,11 @@ class AddTreatmentButton extends StatelessWidget {
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(context),
-              child: Text('Cancel'),
+              style: TextButton.styleFrom(
+                foregroundColor: Colors.teal[800],
+                textStyle: const TextStyle(fontWeight: FontWeight.bold),
+              ),
+              child: const Text('Cancel'),
             ),
           ],
         );
