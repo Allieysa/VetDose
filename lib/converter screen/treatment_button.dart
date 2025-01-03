@@ -105,39 +105,90 @@ class AddTreatmentButton extends StatelessWidget {
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text('Add Treatment'),
-          content: TextField(
-            controller: _treatmentController,
-            decoration: InputDecoration(
-              labelText: 'Enter Treatment Description',
-              border: OutlineInputBorder(),
-            ),
-            maxLines: 3,
+        return Dialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
           ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: Text('Cancel'),
+          child: Container(
+            decoration: BoxDecoration(
+              color: Colors.teal[50], // Dialog background color
+              borderRadius: BorderRadius.circular(12), // Rounded corners
             ),
-            ElevatedButton(
-              onPressed: () async {
-                final treatment = _treatmentController.text.trim();
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  'Add Treatment',
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.teal[800],
+                  ),
+                ),
+                SizedBox(height: 16),
+                TextField(
+                  controller: _treatmentController,
+                  decoration: InputDecoration(
+                    labelText: 'Enter Treatment Description',
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    filled: true,
+                    fillColor: Colors.white,
+                  ),
+                  maxLines: 3,
+                ),
+                SizedBox(height: 16),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    TextButton(
+                      onPressed: () => Navigator.pop(context),
+                      style: TextButton.styleFrom(
+                        foregroundColor: Colors.teal[800],
+                        textStyle: TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                      child: Text('Cancel'),
+                    ),
+                    ElevatedButton(
+                      onPressed: () async {
+                        final treatment = _treatmentController.text.trim();
 
-                if (treatment.isNotEmpty) {
-                  await _saveTreatmentToFirestore(
-                      context, patientId, treatment);
-                  Navigator.pop(context);
-                  if (onTreatmentAdded != null) onTreatmentAdded!();
-                } else {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text('Please enter a treatment.')),
-                  );
-                }
-              },
-              child: Text('Save'),
+                        if (treatment.isNotEmpty) {
+                          await _saveTreatmentToFirestore(
+                              context, patientId, treatment);
+                          Navigator.pop(context);
+                          if (onTreatmentAdded != null) onTreatmentAdded!();
+                        } else {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text('Please enter a treatment.'),
+                              backgroundColor: Colors.teal,
+                            ),
+                          );
+                        }
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.teal,
+                        foregroundColor: Colors.white,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                      ),
+                      child: Text(
+                        'Save',
+                        style: TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
             ),
-          ],
+          ),
         );
       },
     );

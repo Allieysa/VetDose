@@ -35,7 +35,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
     'Profile',
   ];
 
-  @override
+   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Container(
@@ -47,31 +47,36 @@ class _BottomNavBarState extends State<BottomNavBar> {
           ),
         ),
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 18.0, vertical: 8.0),
+          padding: const EdgeInsets.symmetric(
+              horizontal: 0.0,
+              vertical: 8.0), // Adjust padding for better centering
           child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: List.generate(5, (index) => _buildNavItem(index)),
+            mainAxisAlignment:
+                MainAxisAlignment.spaceEvenly, // Ensures equal spacing
+            children:
+                List.generate(_icons.length, (index) => _buildNavItem(index)),
           ),
         ),
       ),
     );
   }
 
-  Widget _buildNavItem(int index) {
+    Widget _buildNavItem(int index) {
     final bool isSelected = index == widget.currentIndex;
-
-    return GestureDetector(
-      onTap: () => widget.onTap(index),
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 300),
-        curve: Curves.easeInOut,
+    return Expanded(
+      // Ensures equal space for each item
+      child: GestureDetector(
+        onTap: () => widget.onTap(index),
+        behavior: HitTestBehavior.opaque,
         child: Column(
           mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment:
+              MainAxisAlignment.center, // Aligns items vertically
           children: [
             Icon(
               _icons[index],
               color: isSelected ? widget.selectedColor : widget.unselectedColor,
-              size: isSelected ? 28 : 24, // Animate icon size
+              size: 28,
             ),
             const SizedBox(height: 4),
             Text(
@@ -79,7 +84,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
               style: TextStyle(
                 color:
                     isSelected ? widget.selectedColor : widget.unselectedColor,
-                fontSize: isSelected ? 12 : 11, // Animate font size
+                fontSize: 12,
                 fontWeight: FontWeight.w300,
               ),
             ),

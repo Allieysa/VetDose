@@ -39,6 +39,7 @@ class _PatientHistoryScreenState extends State<PatientHistoryScreen> {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12),
           ),
+          backgroundColor: Colors.teal[50],
           title: Center(
             child: Text(
               'Patient Information',
@@ -60,7 +61,13 @@ class _PatientHistoryScreenState extends State<PatientHistoryScreen> {
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(context),
-              child: Text('Cancel'),
+              child: Text(
+                'Cancel',
+                style: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black38),
+              ),
             ),
             ElevatedButton(
               onPressed: () async {
@@ -85,7 +92,20 @@ class _PatientHistoryScreenState extends State<PatientHistoryScreen> {
                   );
                 }
               },
-              child: Text('Save'),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.teal,
+                foregroundColor: Colors.white,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12), // Rounded corners
+                ),
+              ),
+              child: Text(
+                'Save',
+                style: TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
             ),
           ],
         );
@@ -100,17 +120,31 @@ class _PatientHistoryScreenState extends State<PatientHistoryScreen> {
     return true;
   }
 
-  Widget _buildInputField(String label, TextEditingController controller) {
+  Widget _buildInputField(String label, TextEditingController controller,
+      {TextInputType keyboardType = TextInputType.text}) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0),
-      child: TextField(
-        controller: controller,
-        decoration: InputDecoration(
-          labelText: label,
-          filled: true,
-          fillColor: Colors.white,
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(8),
+      child: Container(
+        decoration: BoxDecoration(
+          color: const Color.fromARGB(
+              255, 111, 150, 148), // Light teal background for the container
+          borderRadius: BorderRadius.circular(12), // Rounded corners
+        ),
+        child: TextField(
+          controller: controller,
+          keyboardType: keyboardType,
+          decoration: InputDecoration(
+            labelText: label,
+            labelStyle: TextStyle(color: Colors.teal[800]), // Teal label color
+            border: OutlineInputBorder(
+              borderRadius:
+                  BorderRadius.circular(12), // Rounded corners for the border
+              borderSide: BorderSide.none, // Remove border
+            ),
+            filled: true,
+            fillColor: Colors.white, // White input area background
+            contentPadding:
+                const EdgeInsets.all(12), // Padding inside the input field
           ),
         ),
       ),

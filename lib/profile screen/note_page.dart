@@ -138,17 +138,58 @@ class _NotePageState extends State<NotePage> {
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: const Text('Edit Note'),
-          content: TextField(
-            controller: editController,
-            decoration: const InputDecoration(hintText: 'Update your note'),
+          backgroundColor: Colors.teal[50],
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16), // Rounded corners
+          ),
+          title: Center(
+            child: Text(
+              'Edit Note',
+              style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+                color: Colors.teal[800],
+              ),
+            ),
+          ),
+          content: Container(
+            decoration: BoxDecoration(
+              color:
+                  Colors.teal[50], // Light teal background for the input area
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: TextField(
+              controller: editController,
+              decoration: InputDecoration(
+                hintText: 'Update your note',
+                hintStyle: TextStyle(color: Colors.grey[600]),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  borderSide: BorderSide.none,
+                ),
+                filled: true,
+                fillColor: Colors.white, // White input box
+                contentPadding: const EdgeInsets.all(12),
+              ),
+              maxLines: 3,
+            ),
           ),
           actions: [
             TextButton(
               onPressed: () {
                 Navigator.pop(context); // Close the dialog
               },
-              child: const Text('Cancel'),
+              style: TextButton.styleFrom(
+                foregroundColor: Colors.teal[800],
+                textStyle: const TextStyle(fontWeight: FontWeight.bold),
+              ),
+              child: const Text(
+                'Cancel',
+                style: TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
             ),
             ElevatedButton(
               onPressed: () async {
@@ -157,10 +198,27 @@ class _NotePageState extends State<NotePage> {
                   await editNote(noteId, updatedContent);
                   Navigator.pop(context); // Close the dialog
                 } else {
-                  print('Note content is empty');
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('Note content cannot be empty.'),
+                    ),
+                  );
                 }
               },
-              child: const Text('Save'),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.teal,
+                foregroundColor: Colors.white,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12), // Rounded corners
+                ),
+              ),
+              child: const Text(
+                'Save',
+                style: TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
             ),
           ],
         );
@@ -173,28 +231,38 @@ class _NotePageState extends State<NotePage> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Delete Note'),
-          content: Text(
-              'Are you sure you want to delete this note? This action cannot be undone.'),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: Text('Cancel'),
-            ),
-            ElevatedButton(
-              onPressed: () async {
-                await deleteNoteAtIndex(noteId);
-                Navigator.of(context).pop();
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.red,
+            backgroundColor: Colors.white,
+            title: Text('Delete Note'),
+            content: Text(
+                'Are you sure you want to delete this note? This action cannot be undone.'),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: Text('Cancel'),
               ),
-              child: Text('Delete'),
-            ),
-          ],
-        );
+              ElevatedButton(
+                onPressed: () async {
+                  await deleteNoteAtIndex(noteId);
+                  Navigator.of(context).pop();
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color.fromARGB(255, 253, 4, 4),
+                  foregroundColor: Colors.white,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12), // Rounded corners
+                  ),
+                ),
+                child: const Text(
+                  'Delete',
+                  style: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              )
+            ]);
       },
     );
   }
@@ -255,7 +323,6 @@ class _NotePageState extends State<NotePage> {
                       borderRadius: BorderRadius.circular(12),
                     ),
                     margin: const EdgeInsets.symmetric(vertical: 8),
-                    elevation: 3,
                     child: ListTile(
                       title: Text(
                         content,
@@ -278,12 +345,13 @@ class _NotePageState extends State<NotePage> {
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           IconButton(
-                            icon: const Icon(Icons.edit, color: Colors.blue),
+                            icon: const Icon(Icons.edit, color: Colors.teal),
                             onPressed: () =>
                                 showEditNoteDialog(noteId, content),
                           ),
                           IconButton(
-                            icon: const Icon(Icons.delete, color: Colors.red),
+                            icon: const Icon(Icons.delete,
+                                color: Color.fromARGB(255, 125, 124, 124)),
                             onPressed: () =>
                                 showDeleteConfirmationDialog(noteId),
                           ),
@@ -302,14 +370,41 @@ class _NotePageState extends State<NotePage> {
               context: context,
               builder: (context) {
                 return AlertDialog(
-                  title: Text('Add New Note'),
-                  content: TextField(
-                    controller: _noteController,
-                    decoration: InputDecoration(
-                      hintText: 'Enter your note',
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(8),
+                  backgroundColor: Colors.teal[50],
+                  shape: RoundedRectangleBorder(
+                    borderRadius:
+                        BorderRadius.circular(16), // Rounded corners for dialog
+                  ),
+                  title: Center(
+                    child: Text(
+                      'Add New Note',
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.teal[800],
                       ),
+                    ),
+                  ),
+                  content: Container(
+                    decoration: BoxDecoration(
+                      color: Colors
+                          .teal[50], // Light teal background for the input area
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: TextField(
+                      controller: _noteController,
+                      decoration: InputDecoration(
+                        hintText: 'Enter your note',
+                        hintStyle: TextStyle(color: Colors.grey[600]),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                          borderSide: BorderSide.none,
+                        ),
+                        filled: true,
+                        fillColor: Colors.white, // White input box
+                        contentPadding: const EdgeInsets.all(12),
+                      ),
+                      maxLines: 3,
                     ),
                   ),
                   actions: [
@@ -317,14 +412,40 @@ class _NotePageState extends State<NotePage> {
                       onPressed: () {
                         Navigator.pop(context);
                       },
-                      child: Text('Cancel'),
+                      style: TextButton.styleFrom(
+                        foregroundColor: Colors.teal[800],
+                        textStyle: const TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                      child: const Text('Cancel'),
                     ),
                     ElevatedButton(
                       onPressed: () {
-                        addNote();
-                        Navigator.pop(context);
+                        if (_noteController.text.trim().isNotEmpty) {
+                          addNote();
+                          Navigator.pop(context);
+                        } else {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text('Note cannot be empty.'),
+                            ),
+                          );
+                        }
                       },
-                      child: Text('Save'),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.teal,
+                        foregroundColor: Colors.white,
+                        shape: RoundedRectangleBorder(
+                          borderRadius:
+                              BorderRadius.circular(12), // Rounded corners
+                        ),
+                      ),
+                      child: const Text(
+                        'Save',
+                        style: TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
                     ),
                   ],
                 );
@@ -336,8 +457,7 @@ class _NotePageState extends State<NotePage> {
             'Add Note',
             style: TextStyle(color: Colors.white), // White font color
           ),
-          backgroundColor:
-              Colors.teal.shade300, // Background color remains the same
+          backgroundColor: Colors.teal, // Background color remains the same
         ));
   }
 }

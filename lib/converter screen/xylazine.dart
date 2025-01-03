@@ -56,7 +56,18 @@ class _XylazineState extends State<Xylazine> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Xylazine Calculator')),
+      backgroundColor: Colors.white,
+      appBar: AppBar(
+        backgroundColor: Colors.teal,
+        title: Text(
+          'Xylazine Calculator',
+          style: TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+            fontSize: 20,
+          ),
+        ),
+      ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: SingleChildScrollView(
@@ -68,13 +79,32 @@ class _XylazineState extends State<Xylazine> {
                 keyboardType: TextInputType.number,
                 decoration: InputDecoration(
                   labelText: 'Enter Body Weight (kg)',
-                  border: OutlineInputBorder(),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  filled: true,
+                  fillColor: Colors.teal[50],
                 ),
               ),
               SizedBox(height: 16),
               ElevatedButton(
                 onPressed: calculateResults,
-                child: Text('Calculate'),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.teal,
+                  foregroundColor: Colors.white,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  padding:
+                      EdgeInsets.symmetric(horizontal: 12.0, vertical: 6.0),
+                ),
+                child: Text(
+                  'Calculate',
+                  style: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
               ),
               SizedBox(height: 16),
               if (bolusInjection != null) ...[
@@ -91,7 +121,7 @@ class _XylazineState extends State<Xylazine> {
                   },
                   children: [
                     TableRow(
-                      decoration: BoxDecoration(color: Colors.grey[300]),
+                      decoration: BoxDecoration(color: Colors.teal[50]),
                       children: [
                         tableCell('Description', bold: true),
                         tableCell('Value', bold: true),
@@ -117,7 +147,7 @@ class _XylazineState extends State<Xylazine> {
                   },
                   children: [
                     TableRow(
-                      decoration: BoxDecoration(color: Colors.grey[300]),
+                      decoration: BoxDecoration(color: Colors.teal[50]),
                       children: [
                         tableCell('Option', bold: true),
                         tableCell('Volume (ml)', bold: true),
@@ -149,7 +179,7 @@ class _XylazineState extends State<Xylazine> {
                   },
                   children: [
                     TableRow(
-                      decoration: BoxDecoration(color: Colors.grey[300]),
+                      decoration: BoxDecoration(color: Colors.teal[50]),
                       children: [
                         tableCell('Option', bold: true),
                         tableCell('Discarded Volume (ml)', bold: true),
@@ -185,9 +215,9 @@ class _XylazineState extends State<Xylazine> {
                   children: [
                     // Header Row
                     TableRow(
-                      decoration: BoxDecoration(color: Colors.grey[300]),
+                      decoration: BoxDecoration(color: Colors.teal[50]),
                       children: [
-                        tableCell('Dosage', bold: true),
+                        tableCell('Dosage mg/kg/hr', bold: true),
                         tableCell('ml/min', bold: true),
                         tableCell('drop/min', bold: true),
                         tableCell('drop/sec', bold: true),
@@ -196,7 +226,7 @@ class _XylazineState extends State<Xylazine> {
                     ),
                     // Row for 0.7 mg/kg/hr
                     TableRow(children: [
-                      tableCell('0.7 mg/kg/hr'),
+                      tableCell('0.7 '),
                       tableCell(
                           '${dripRateOption1_07?['ml/min']?.toStringAsFixed(2)}'),
                       tableCell(
@@ -208,7 +238,7 @@ class _XylazineState extends State<Xylazine> {
                     ]),
                     // Row for 1.1 mg/kg/hr
                     TableRow(children: [
-                      tableCell('1.1 mg/kg/hr'),
+                      tableCell('1.1'),
                       tableCell(
                           '${dripRateOption1_11?['ml/min']?.toStringAsFixed(2)}'),
                       tableCell(
@@ -237,9 +267,9 @@ class _XylazineState extends State<Xylazine> {
                   children: [
                     // Header Row
                     TableRow(
-                      decoration: BoxDecoration(color: Colors.grey[300]),
+                      decoration: BoxDecoration(color: Colors.teal[50]),
                       children: [
-                        tableCell('Dosage', bold: true),
+                        tableCell('Dosage  mg/kg/hr', bold: true),
                         tableCell('ml/min', bold: true),
                         tableCell('drop/min', bold: true),
                         tableCell('drop/sec', bold: true),
@@ -248,7 +278,7 @@ class _XylazineState extends State<Xylazine> {
                     ),
                     // Row for 0.7 mg/kg/hr
                     TableRow(children: [
-                      tableCell('0.7 mg/kg/hr'),
+                      tableCell('0.7'),
                       tableCell(
                           '${dripRateOption2_07?['ml/min']?.toStringAsFixed(2)}'),
                       tableCell(
@@ -260,7 +290,7 @@ class _XylazineState extends State<Xylazine> {
                     ]),
                     // Row for 1.1 mg/kg/hr
                     TableRow(children: [
-                      tableCell('1.1 mg/kg/hr'),
+                      tableCell('1.1'),
                       tableCell(
                           '${dripRateOption2_11?['ml/min']?.toStringAsFixed(2)}'),
                       tableCell(

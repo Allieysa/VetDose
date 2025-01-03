@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:vetdose/converter screen/treatment_button.dart';
 
 class FluidVolumePage extends StatefulWidget {
   @override
@@ -21,7 +20,7 @@ class _FluidVolumePageState extends State<FluidVolumePage> {
   double microdripMorningRateCat = 0.0;
   double microdripNightRateCat = 0.0;
 
-  bool showAddTreatmentButton = false; // Show Add Treatment button
+  bool showAddTreatmentButton = false;
 
   void calculateResults() {
     double weight = double.tryParse(weightController.text) ?? 0.0;
@@ -29,51 +28,115 @@ class _FluidVolumePageState extends State<FluidVolumePage> {
     double diuresisRate = double.tryParse(diuresisRateController.text) ?? 0.0;
     double fluidLoss = double.tryParse(fluidLossController.text) ?? 0.0;
 
-    // Maintenance volume
     double maintenanceVolumeDog = weight * 40;
     double maintenanceVolumeCat = weight * 60;
 
-    // Diuresis rate
     double diuresisVolumeDog = diuresisRate * maintenanceVolumeDog;
     double diuresisVolumeCat = diuresisRate * maintenanceVolumeCat;
 
-    // Dehydration (mL)
     double dehydrationVolume = weight * dehydration * 10;
 
-    // Total fluid requirement
     totalFluidRequirementDog =
         dehydrationVolume + fluidLoss + diuresisVolumeDog;
     totalFluidRequirementCat =
         dehydrationVolume + fluidLoss + diuresisVolumeCat;
 
-    // Maintenance only Microdrip
     maintenanceOnlyMacrodripDog = (totalFluidRequirementDog / 24) / 3;
     maintenanceOnlyMicrodripCat = totalFluidRequirementCat / 14;
 
-    // Infusion pump rate
     infusionPumpRateDog = totalFluidRequirementDog / 24;
     infusionPumpRateCat = totalFluidRequirementCat / 24;
 
-    // Microdrip rates (cat only)
     microdripMorningRateCat = ((totalFluidRequirementCat - 150) / 14);
     microdripNightRateCat = 15;
 
-    showAddTreatmentButton = true; // Show Add Treatment button
+    showAddTreatmentButton = true;
 
     setState(() {});
+  }
+
+  Widget buildInputField(String label, TextEditingController controller) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8.0),
+      child: TextField(
+        controller: controller,
+        keyboardType: TextInputType.number,
+        decoration: InputDecoration(
+          labelText: label,
+          border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+          filled: true,
+          fillColor: Colors.teal[50],
+        ),
+      ),
+    );
+  }
+
+  Widget buildResultsCard(String title, List<Map<String, String>> results) {
+    return Card(
+      elevation: 6,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+      color: Colors.teal[50],
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              title,
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+                color: Colors.teal,
+              ),
+            ),
+            SizedBox(height: 8),
+            ...results.map((result) => Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 4.0),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Expanded(
+                        flex: 3,
+                        child: Text(
+                          result['title']!,
+                          style: TextStyle(
+                            fontWeight: FontWeight.w500,
+                            color: Colors.teal[700],
+                          ),
+                        ),
+                      ),
+                      SizedBox(width: 8),
+                      Expanded(
+                        flex: 2,
+                        child: Text(
+                          result['value']!,
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                          ),
+                          textAlign: TextAlign.right,
+                        ),
+                      ),
+                    ],
+                  ),
+                )),
+          ],
+        ),
+      ),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
-        title: Align(
-          alignment: Alignment.centerLeft, // Aligns the text to the right
-          child: Text(
-            'Fluid Volume',
-            style: TextStyle(
-              fontSize: 20, // Adjust the font size as needed
-            ),
+        backgroundColor: Colors.teal,
+        title: Text(
+          'Fluid Volume',
+          style: TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+            fontSize: 20,
           ),
         ),
       ),
@@ -83,65 +146,23 @@ class _FluidVolumePageState extends State<FluidVolumePage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Card(
-                color: Colors.white,
-                elevation: 2, // Add elevation for shadow effect
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Column(
-                    children: [
-                      TextField(
-                        controller: weightController,
-                        keyboardType: TextInputType.number,
-                        decoration: InputDecoration(
-                          labelText: 'Enter Body Weight (kg)',
-                          border: OutlineInputBorder(),
-                        ),
-                      ),
-                      SizedBox(height: 10),
-                      TextField(
-                        controller: dehydrationController,
-                        keyboardType: TextInputType.number,
-                        decoration: InputDecoration(
-                          labelText: 'Dehydration (%)',
-                          border: OutlineInputBorder(),
-                        ),
-                      ),
-                      SizedBox(height: 10),
-                      TextField(
-                        controller: diuresisRateController,
-                        keyboardType: TextInputType.number,
-                        decoration: InputDecoration(
-                          labelText: 'Diuresis Rate',
-                          border: OutlineInputBorder(),
-                        ),
-                      ),
-                      SizedBox(height: 10),
-                      TextField(
-                        controller: fluidLossController,
-                        keyboardType: TextInputType.number,
-                        decoration: InputDecoration(
-                          labelText: 'Fluid Loss',
-                          border: OutlineInputBorder(),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
+              Text(
+                'Enter Animal Data',
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
+              SizedBox(height: 10),
+              buildInputField('Body Weight (kg)', weightController),
+              buildInputField('Dehydration (%)', dehydrationController),
+              buildInputField('Diuresis Rate', diuresisRateController),
+              buildInputField('Fluid Loss', fluidLossController),
               SizedBox(height: 20),
               ElevatedButton(
                 onPressed: calculateResults,
                 style: ElevatedButton.styleFrom(
-                  backgroundColor:
-                      Colors.teal, // Correct property for background color
-                  foregroundColor:
-                      Colors.white, // Correct property for text color
+                  backgroundColor: Colors.teal,
+                  foregroundColor: Colors.white,
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12), // Rounded corners
+                    borderRadius: BorderRadius.circular(12),
                   ),
                   padding:
                       EdgeInsets.symmetric(horizontal: 12.0, vertical: 6.0),
@@ -155,74 +176,56 @@ class _FluidVolumePageState extends State<FluidVolumePage> {
                 ),
               ),
               SizedBox(height: 20),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  // Results for Dogs
-                  Container(
-                    padding: const EdgeInsets.all(16.0),
-                    margin: const EdgeInsets.only(
-                        bottom: 20), // Spacing between sections
-                    decoration: BoxDecoration(
-                      color: Colors.teal.shade50, // Light background
-                      borderRadius:
-                          BorderRadius.circular(12), // Rounded corners
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'Results for Dogs:',
-                          style: TextStyle(
-                              fontSize: 18, fontWeight: FontWeight.bold),
-                        ),
-                        const SizedBox(height: 8),
-                        Text(
-                            'Total Fluid Requirement: ${totalFluidRequirementDog.toStringAsFixed(2)} mL/day'),
-                        Text(
-                            'Maintenance Only Macrodrip: ${maintenanceOnlyMacrodripDog.toStringAsFixed(2)} drops/min'),
-                        Text(
-                            'Infusion Pump Rate (24 hrs): ${infusionPumpRateDog.toStringAsFixed(2)} mL/hr'),
-                      ],
-                    ),
-                  ),
-
-                  // Results for Cats
-                  Container(
-                    padding: const EdgeInsets.all(16.0),
-                    decoration: BoxDecoration(
-                      color: Colors.teal.shade50, // Light background
-                      borderRadius:
-                          BorderRadius.circular(12), // Rounded corners
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'Results for Cats:',
-                          style: TextStyle(
-                              fontSize: 18, fontWeight: FontWeight.bold),
-                        ),
-                        const SizedBox(height: 8),
-                        Text(
-                            'Total Fluid Requirement: ${totalFluidRequirementCat.toStringAsFixed(2)} mL/day'),
-                        Text(
-                            'Maintenance Only Microdrip: ${maintenanceOnlyMicrodripCat.toStringAsFixed(2)} drops/min'),
-                        Text(
-                            'Infusion Pump Rate (24 hrs): ${infusionPumpRateCat.toStringAsFixed(2)} mL/hr'),
-                        Text(
-                            'Microdrip Morning Rate: ${microdripMorningRateCat.toStringAsFixed(2)} drops/min'),
-                        Text(
-                            'Microdrip Night Rate: ${microdripNightRateCat.toStringAsFixed(2)} drops/min'),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-              SizedBox(height: 16),
               if (showAddTreatmentButton)
-                AddTreatmentButton(
-                  onTreatmentAdded: () {},
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    buildResultsCard('Results for Dogs:', [
+                      {
+                        'title': 'Total Fluid Requirement',
+                        'value':
+                            '${totalFluidRequirementDog.toStringAsFixed(2)} mL/day'
+                      },
+                      {
+                        'title': 'Maintenance Only Macrodrip',
+                        'value':
+                            '${maintenanceOnlyMacrodripDog.toStringAsFixed(2)} drops/min'
+                      },
+                      {
+                        'title': 'Infusion Pump Rate        (24 hrs)',
+                        'value':
+                            '${infusionPumpRateDog.toStringAsFixed(2)} mL/hr'
+                      },
+                    ]),
+                    SizedBox(height: 20),
+                    buildResultsCard('Results for Cats:', [
+                      {
+                        'title': 'Total Fluid Requirement',
+                        'value':
+                            '${totalFluidRequirementCat.toStringAsFixed(2)} mL/day'
+                      },
+                      {
+                        'title': 'Maintenance Only Microdrip',
+                        'value':
+                            '${maintenanceOnlyMicrodripCat.toStringAsFixed(2)} drops/min'
+                      },
+                      {
+                        'title': 'Infusion Pump Rate        (24 hrs)',
+                        'value':
+                            '${infusionPumpRateCat.toStringAsFixed(2)} mL/hr'
+                      },
+                      {
+                        'title': 'Microdrip Morning Rate',
+                        'value':
+                            '${microdripMorningRateCat.toStringAsFixed(2)} drops/min'
+                      },
+                      {
+                        'title': 'Microdrip Night Rate',
+                        'value':
+                            '${microdripNightRateCat.toStringAsFixed(2)} drops/min'
+                      },
+                    ]),
+                  ],
                 ),
             ],
           ),

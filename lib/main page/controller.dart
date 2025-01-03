@@ -1,23 +1,23 @@
 import 'package:flutter/material.dart';
+import 'package:vetdose/utils/instant_page_route.dart';
 
 class Controller {
   final TextEditingController weightController = TextEditingController();
   bool isKg = true;
-
-  // Notify changes in weight unit
   ValueNotifier<bool> isKgNotifier = ValueNotifier<bool>(true);
+  int currentIndex = 0;
 
-  int currentIndex = 0; // Track the current index
-
-  // Manage tab changes with navigation
   void onTabTapped(int index, BuildContext context) {
-    // if (index == currentIndex) return; // Prevent navigating to the same screen
+    currentIndex = index;
+    String route = _getRouteName(index);
 
-    currentIndex = index; // Update the current index
-    Navigator.pushReplacementNamed(context, _getRouteName(index));
+    // Clear the navigation stack and replace with new route
+    Navigator.of(context).pushNamedAndRemoveUntil(
+      route,
+      (route) => false,
+    );
   }
 
-  // Map index to route names
   String _getRouteName(int index) {
     switch (index) {
       case 0:
@@ -31,7 +31,7 @@ class Controller {
       case 4:
         return '/profile';
       default:
-        return '/home'; // Default fallback route
+        return '/home';
     }
   }
 }

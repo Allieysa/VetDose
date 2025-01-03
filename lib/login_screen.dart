@@ -32,6 +32,7 @@ class _LoginScreenState extends State<LoginScreen> {
     });
 
     try {
+      // ignore: unused_local_variable
       UserCredential userCredential = await _auth.signInWithEmailAndPassword(
         email: _emailController.text.trim(),
         password: _passwordController.text.trim(),

@@ -60,8 +60,17 @@ class _DobutamineState extends State<Dobutamine> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
-        title: Text('Dobutamine Calculator'),
+        backgroundColor: Colors.teal,
+        title: Text(
+          'Dobutamine Calculator',
+          style: TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+            fontSize: 20,
+          ),
+        ),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -76,7 +85,11 @@ class _DobutamineState extends State<Dobutamine> {
                   keyboardType: TextInputType.number,
                   decoration: InputDecoration(
                     labelText: 'Enter Patient Weight (kg)',
-                    border: OutlineInputBorder(),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    filled: true,
+                    fillColor: Colors.teal[50],
                   ),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
@@ -91,12 +104,23 @@ class _DobutamineState extends State<Dobutamine> {
                 ),
                 SizedBox(height: 16),
                 ElevatedButton(
-                  onPressed: () {
-                    if (_formKey.currentState?.validate() ?? false) {
-                      calculateResults();
-                    }
-                  },
-                  child: Text('Calculate'),
+                  onPressed: calculateResults,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.teal,
+                    foregroundColor: Colors.white,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    padding:
+                        EdgeInsets.symmetric(horizontal: 12.0, vertical: 6.0),
+                  ),
+                  child: Text(
+                    'Calculate',
+                    style: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
                 ),
                 SizedBox(height: 16),
                 if (dobAndNaCl.isNotEmpty)
@@ -127,7 +151,7 @@ class _DobutamineState extends State<Dobutamine> {
                           TableRow(
                             decoration: BoxDecoration(
                                 color:
-                                    const Color.fromARGB(255, 225, 240, 226)),
+                                    Colors.teal[50]),
                             children: [
                               Padding(
                                 padding: EdgeInsets.all(8.0),

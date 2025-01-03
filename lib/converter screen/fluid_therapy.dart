@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:vetdose/converter screen/treatment_button.dart';
+import 'package:vetdose/converter%20screen/treatment_button.dart';
 
 class FluidTherapy extends StatefulWidget {
   @override
@@ -26,8 +26,7 @@ class _FluidTherapyState extends State<FluidTherapy> {
   double dropsPerSecond = 0.0;
   double secondsPerDrop = 0.0;
 
-  bool showAddTreatmentButton =
-      false; // To track if the button should be visible
+  bool showAddTreatmentButton = false;
 
   void calculateResults() {
     double weight = double.tryParse(weightController.text) ?? 0.0;
@@ -35,35 +34,44 @@ class _FluidTherapyState extends State<FluidTherapy> {
         double.tryParse(replacementPercentController.text) ?? 0.0;
     double maintenanceVolumeRate =
         double.tryParse(maintenanceVolumeController.text) ?? 0.0;
-    double fluidGiven = double.tryParse(fluidGivenController.text) ?? 0.0;
+    double fluidGiven = double.tryParse(fluidGivenController.text) ?? 1.0;
 
-    // Replacement Volume Calculation
-    replacementVolume =
-        weight * replacementPercent * 10; // Multiply by 10 for mL/kg
+    if (weight <= 0 || replacementPercent <= 0 || maintenanceVolumeRate <= 0) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text('Please enter valid data for all fields!'),
+        backgroundColor: Colors.red,
+      ));
+      return;
+    }
 
-    // Maintenance Volume Calculation
-    maintenanceVolume = weight * maintenanceVolumeRate;
+    setState(() {
+      // Replacement Volume Calculation
+      replacementVolume =
+          weight * replacementPercent * 10; // Multiply by 10 for mL/kg
 
-    // Ongoing Losses Volume (assumed input, set as 0 for now)
-    ongoingLossesVolume = 0.0;
+      // Maintenance Volume Calculation
+      maintenanceVolume = weight * maintenanceVolumeRate;
 
-    // Total Volume Calculation
-    totalVolume = replacementVolume + maintenanceVolume + ongoingLossesVolume;
+      // Ongoing Losses Volume (assumed input, set as 0 for now)
+      ongoingLossesVolume = 0.0;
 
-    // Volume to Be Delivered
-    volumeToBeDeliveredPerHour = totalVolume / fluidGiven;
-    volumeToBeDeliveredPerMinute = volumeToBeDeliveredPerHour / 60;
-    volumeToBeDeliveredPerSecond = volumeToBeDeliveredPerMinute / 60;
+      // Total Volume Calculation
+      totalVolume = replacementVolume + maintenanceVolume + ongoingLossesVolume;
 
-    // Drip Calculations
-    double dripSet = 60; // Micro drip set (drops/mL)
-    dropsPerMinute = volumeToBeDeliveredPerHour * dripSet / 60;
-    dropsPer10Seconds = dropsPerMinute / 6;
-    dropsPerSecond = dropsPerMinute / 60;
-    secondsPerDrop = 60 / dropsPerMinute;
+      // Volume to Be Delivered Calculations
+      volumeToBeDeliveredPerHour = totalVolume / fluidGiven;
+      volumeToBeDeliveredPerMinute = volumeToBeDeliveredPerHour / 60;
+      volumeToBeDeliveredPerSecond = volumeToBeDeliveredPerMinute / 60;
 
-    showAddTreatmentButton = true; // Show Add Treatment button
-    setState(() {});
+      // Drip Calculations
+      double dripSet = 60; // Micro drip set (drops/mL)
+      dropsPerMinute = volumeToBeDeliveredPerHour * dripSet / 60;
+      dropsPer10Seconds = dropsPerMinute / 6;
+      dropsPerSecond = dropsPerMinute / 60;
+      secondsPerDrop = 60 / dropsPerMinute;
+
+      showAddTreatmentButton = true;
+    });
   }
 
   Widget buildInputField(String label, TextEditingController controller) {
@@ -74,121 +82,153 @@ class _FluidTherapyState extends State<FluidTherapy> {
         keyboardType: TextInputType.number,
         decoration: InputDecoration(
           labelText: label,
-          border: OutlineInputBorder(),
+          border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+          filled: true,
+          fillColor: Colors.teal[50],
         ),
       ),
     );
   }
 
-  Widget buildResultsSection() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          'Results:',
-          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-        ),
-        Text('Replacement Volume: ${replacementVolume.toStringAsFixed(2)} mL'),
-        Text('Maintenance Volume: ${maintenanceVolume.toStringAsFixed(2)} mL'),
-        Text('Total Volume: ${totalVolume.toStringAsFixed(2)} mL'),
-        Text(
-            'Volume to be Delivered Per Hour: ${volumeToBeDeliveredPerHour.toStringAsFixed(2)} mL/hr'),
-        Text(
-            'Drops Per Minute: ${dropsPerMinute.toStringAsFixed(2)} drops/min'),
-        Text('Seconds Per Drop: ${secondsPerDrop.toStringAsFixed(2)} sec/drop'),
-        SizedBox(height: 16),
-      ],
+  Widget buildResultsCard() {
+    return Card(
+      elevation: 6,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+      color: Colors.teal[50],
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          Text(
+            'Results:',
+            style: TextStyle(
+                fontWeight: FontWeight.bold, fontSize: 18, color: Colors.teal),
+          ),
+          Divider(),
+          resultRow('Replacement Volume',
+              '${replacementVolume.toStringAsFixed(2)} mL'),
+          resultRow('Maintenance Volume',
+              '${maintenanceVolume.toStringAsFixed(2)} mL'),
+          resultRow('Ongoing Losses Volume',
+              '${ongoingLossesVolume.toStringAsFixed(2)} mL'),
+          resultRow('Total Volume', '${totalVolume.toStringAsFixed(2)} mL'),
+          SizedBox(height: 10),
+          Text(
+            'Volume:',
+            style: TextStyle(
+              fontSize: 14, // Adjust font size as needed
+              fontWeight: FontWeight.bold, // Make the text bold
+              color: Colors.teal, // Set the text color
+            ),
+          ),
+          resultRow('Delivered Per Hour',
+              '${volumeToBeDeliveredPerHour.toStringAsFixed(2)} mL/hr'),
+          resultRow('Delivered Per Minute',
+              '${volumeToBeDeliveredPerMinute.toStringAsFixed(2)} mL/min'),
+          resultRow('Delivered Per Second',
+              '${volumeToBeDeliveredPerSecond.toStringAsFixed(2)} mL/sec'),
+          SizedBox(height: 10),
+          resultRow('Drops Per Minute',
+              '${dropsPerMinute.toStringAsFixed(2)} drops/min'),
+          resultRow('Drops Per 10 Seconds',
+              '${dropsPer10Seconds.toStringAsFixed(2)} drops/10 sec'),
+          resultRow('Drops Per Second',
+              '${dropsPerSecond.toStringAsFixed(2)} drops/sec'),
+          resultRow('Seconds Per Drop',
+              '${secondsPerDrop.toStringAsFixed(3)} sec/drop'),
+        ]),
+      ),
+    );
+  }
+
+  Widget resultRow(String title, String value) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 4.0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(title,
+              style: TextStyle(
+                fontWeight: FontWeight.w500,
+                color: Colors.teal[700],
+              )),
+          Text(value, style: TextStyle(fontWeight: FontWeight.bold)),
+        ],
+      ),
     );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          title: Text('Fluid Therapy for Large Animals'),
-          centerTitle: true,
+      backgroundColor: Colors.white,
+      appBar: AppBar(
+        backgroundColor: Colors.teal,
+        title: Align(
+          alignment: Alignment.centerLeft, // Aligns the text to the right
+          child: Text(
+            'Fluid Theraphy',
+            style: TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+              fontSize: 20, // Adjust the font size as needed
+            ),
+          ),
         ),
-        body: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: SingleChildScrollView(
-              child: Column(
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: SingleChildScrollView(
+          child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              TextField(
-                controller: weightController,
-                keyboardType: TextInputType.number,
-                decoration: InputDecoration(
-                  labelText: 'Weight of the Animal (kg)',
-                  border: OutlineInputBorder(),
-                ),
+              Text(
+                'Enter Animal Data',
+                style: TextStyle(fontSize: 18),
               ),
               SizedBox(height: 10),
-              TextField(
-                controller: replacementPercentController,
-                keyboardType: TextInputType.number,
-                decoration: InputDecoration(
-                  labelText: 'Replacement Percent (%)',
-                  border: OutlineInputBorder(),
-                ),
-              ),
-              SizedBox(height: 10),
-              TextField(
-                controller: maintenanceVolumeController,
-                keyboardType: TextInputType.number,
-                decoration: InputDecoration(
-                  labelText: 'Maintenance Volume (mL/kg)',
-                  border: OutlineInputBorder(),
-                ),
-              ),
-              SizedBox(height: 10),
-              TextField(
-                controller: fluidGivenController,
-                keyboardType: TextInputType.number,
-                decoration: InputDecoration(
-                  labelText: 'Fluid Given in Hours',
-                  border: OutlineInputBorder(),
-                ),
-              ),
+              buildInputField('Weight (kg)', weightController),
+              buildInputField(
+                  'Replacement Percent (%)', replacementPercentController),
+              buildInputField(
+                  'Maintenance (mL/kg)', maintenanceVolumeController),
+              buildInputField('Fluid Duration (hours)', fluidGivenController),
               SizedBox(height: 20),
               ElevatedButton(
                 onPressed: calculateResults,
-                child: Text('Calculate'),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor:
+                      Colors.teal, // Correct property for background color
+                  foregroundColor:
+                      Colors.white, // Correct property for text color
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12), // Rounded corners
+                  ),
+                  padding:
+                      EdgeInsets.symmetric(horizontal: 12.0, vertical: 6.0),
+                ),
+                child: Text(
+                  'Calculate',
+                  style: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
               ),
               SizedBox(height: 20),
-              Text(
-                'Results:',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-              ),
-              Text(
-                  'Replacement Volume: ${replacementVolume.toStringAsFixed(2)} mL'),
-              Text(
-                  'Maintenance Volume: ${maintenanceVolume.toStringAsFixed(2)} mL'),
-              Text(
-                  'Ongoing Losses Volume: ${ongoingLossesVolume.toStringAsFixed(2)} mL'),
-              Text('Total Volume: ${totalVolume.toStringAsFixed(2)} mL'),
-              SizedBox(height: 10),
-              Text(
-                  'Volume to Be Delivered Per Hour: ${volumeToBeDeliveredPerHour.toStringAsFixed(2)} mL/hr'),
-              Text(
-                  'Volume to Be Delivered Per Minute: ${volumeToBeDeliveredPerMinute.toStringAsFixed(2)} mL/min'),
-              Text(
-                  'Volume to Be Delivered Per Second: ${volumeToBeDeliveredPerSecond.toStringAsFixed(2)} mL/sec'),
-              SizedBox(height: 10),
-              Text(
-                  'Drops Per Minute: ${dropsPerMinute.toStringAsFixed(2)} drops/min'),
-              Text(
-                  'Drops Per 10 Seconds: ${dropsPer10Seconds.toStringAsFixed(2)} drops/10 sec'),
-              Text(
-                  'Drops Per Second: ${dropsPerSecond.toStringAsFixed(2)} drops/sec'),
-              Text(
-                  'Seconds Per Drop: ${secondsPerDrop.toStringAsFixed(2)} sec/drop'),
-              SizedBox(height: 16),
+              if (replacementVolume > 0) buildResultsCard(),
+              SizedBox(height: 20),
               if (showAddTreatmentButton)
                 AddTreatmentButton(
-                  onTreatmentAdded: () {},
+                  onTreatmentAdded: () {
+                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                      content: Text('Treatment added successfully!'),
+                    ));
+                  },
                 ),
             ],
-          )),
-        ));
+          ),
+        ),
+      ),
+    );
   }
 }

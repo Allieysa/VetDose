@@ -53,25 +53,65 @@ class _LidocaineState extends State<Lidocaine> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Lidocaine Calculator')),
+      backgroundColor: Colors.white,
+      appBar: AppBar(
+        backgroundColor: Colors.teal,
+        title: Text(
+          'Lidocaine Calculator',
+          style: TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+            fontSize: 20,
+          ),
+        ),
+      ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              TextField(
+              TextFormField(
                 controller: _weightController,
                 keyboardType: TextInputType.number,
                 decoration: InputDecoration(
-                  labelText: 'Enter Body Weight (kg)',
-                  border: OutlineInputBorder(),
+                  labelText: 'Enter Patient Weight (kg)',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  filled: true,
+                  fillColor: Colors.teal[50],
                 ),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter the patient weight';
+                  }
+                  if (double.tryParse(value) == null ||
+                      double.parse(value) <= 0) {
+                    return 'Enter a valid weight';
+                  }
+                  return null;
+                },
               ),
               SizedBox(height: 16),
               ElevatedButton(
                 onPressed: calculateResults,
-                child: Text('Calculate'),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.teal,
+                  foregroundColor: Colors.white,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  padding:
+                      EdgeInsets.symmetric(horizontal: 12.0, vertical: 6.0),
+                ),
+                child: Text(
+                  'Calculate',
+                  style: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
               ),
               SizedBox(height: 16),
               if (bolusInjection != null) ...[
@@ -81,10 +121,12 @@ class _LidocaineState extends State<Lidocaine> {
                 Table(
                   border: TableBorder.all(color: Colors.black),
                   children: [
-                    TableRow(children: [
-                      tableCell('Description', bold: true),
-                      tableCell('Value', bold: true),
-                    ]),
+                    TableRow(
+                        decoration: BoxDecoration(color: Colors.teal[50]),
+                        children: [
+                          tableCell('Description', bold: true),
+                          tableCell('Value', bold: true),
+                        ]),
                     TableRow(children: [
                       tableCell('Bolus Injection'),
                       tableCell('${bolusInjection?.toStringAsFixed(2)} ml'),
@@ -99,10 +141,12 @@ class _LidocaineState extends State<Lidocaine> {
                 Table(
                   border: TableBorder.all(color: Colors.black),
                   children: [
-                    TableRow(children: [
-                      tableCell('Option', bold: true),
-                      tableCell('Volume (ml)', bold: true),
-                    ]),
+                    TableRow(
+                        decoration: BoxDecoration(color: Colors.teal[50]),
+                        children: [
+                          tableCell('Option', bold: true),
+                          tableCell('Volume (ml)', bold: true),
+                        ]),
                     TableRow(children: [
                       tableCell('Option 1 (100 ml NS)'),
                       tableCell(
@@ -123,10 +167,12 @@ class _LidocaineState extends State<Lidocaine> {
                 Table(
                   border: TableBorder.all(color: Colors.black),
                   children: [
-                    TableRow(children: [
-                      tableCell('Option', bold: true),
-                      tableCell('Discarded Volume (ml)', bold: true),
-                    ]),
+                    TableRow(
+                        decoration: BoxDecoration(color: Colors.teal[50]),
+                        children: [
+                          tableCell('Option', bold: true),
+                          tableCell('Discarded Volume (ml)', bold: true),
+                        ]),
                     TableRow(children: [
                       tableCell('Option 1 (100 ml NS)'),
                       tableCell(
@@ -147,13 +193,15 @@ class _LidocaineState extends State<Lidocaine> {
                 Table(
                   border: TableBorder.all(color: Colors.black),
                   children: [
-                    TableRow(children: [
-                      tableCell('Dosage', bold: true),
-                      tableCell('ml/min', bold: true),
-                      tableCell('drop/min', bold: true),
-                      tableCell('drop/sec', bold: true),
-                      tableCell('sec/drop', bold: true),
-                    ]),
+                    TableRow(
+                        decoration: BoxDecoration(color: Colors.teal[50]),
+                        children: [
+                          tableCell('Dosage', bold: true),
+                          tableCell('ml/min', bold: true),
+                          tableCell('drop/min', bold: true),
+                          tableCell('drop/sec', bold: true),
+                          tableCell('sec/drop', bold: true),
+                        ]),
                     TableRow(children: [
                       tableCell('3 mg/kg/hr'),
                       tableCell(
@@ -174,13 +222,15 @@ class _LidocaineState extends State<Lidocaine> {
                 Table(
                   border: TableBorder.all(color: Colors.black),
                   children: [
-                    TableRow(children: [
-                      tableCell('Dosage', bold: true),
-                      tableCell('ml/min', bold: true),
-                      tableCell('drop/min', bold: true),
-                      tableCell('drop/sec', bold: true),
-                      tableCell('sec/drop', bold: true),
-                    ]),
+                    TableRow(
+                        decoration: BoxDecoration(color: Colors.teal[50]),
+                        children: [
+                          tableCell('Dosage', bold: true),
+                          tableCell('ml/min', bold: true),
+                          tableCell('drop/min', bold: true),
+                          tableCell('drop/sec', bold: true),
+                          tableCell('sec/drop', bold: true),
+                        ]),
                     TableRow(children: [
                       tableCell('3 mg/kg/hr'),
                       tableCell(

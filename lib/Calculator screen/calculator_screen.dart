@@ -71,8 +71,9 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: const Color.fromARGB(255, 241, 250, 250),
       appBar: AppBar(
-        title: Text('Calculator'),
+        backgroundColor: const Color.fromARGB(255, 241, 250, 250),
       ),
       bottomNavigationBar: BottomNavBar(
         currentIndex: widget.currentIndex, // Use widget.currentIndex

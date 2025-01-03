@@ -51,12 +51,15 @@ class _BloodTransfusionPageState extends State<BloodTransfusionPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
-        title: Align(
-          alignment: Alignment.centerLeft,
-          child: Text(
-            'Blood Transfusion Calculator',
-            style: TextStyle(fontSize: 20),
+        backgroundColor: Colors.teal,
+        title: const Text(
+          'Blood Transfusion Calculator',
+          style: TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+            fontSize: 20,
           ),
         ),
       ),
@@ -110,21 +113,51 @@ class _BloodTransfusionPageState extends State<BloodTransfusionPage> {
                     borderRadius: BorderRadius.circular(12),
                   ),
                   padding: const EdgeInsets.symmetric(
-                    horizontal: 12.0,
-                    vertical: 6.0,
+                    horizontal: 16.0,
+                    vertical: 12.0,
                   ),
                 ),
-                child: const Text('Calculate'),
+                child: const Text(
+                  'Calculate',
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                ),
               ),
               const SizedBox(height: 20),
               // Results Display
-              _buildResults(),
+              if (showAddTreatmentButton)
+                buildResultsCard(
+                  'Results Summary',
+                  [
+                    {
+                      'title': 'Volume Required (Cats)',
+                      'value': '${volumeRequiredCat.toStringAsFixed(2)} mL',
+                    },
+                    {
+                      'title': 'Volume Required (Dogs)',
+                      'value': '${volumeRequiredDog.toStringAsFixed(2)} mL',
+                    },
+                    {
+                      'title': 'First 15 min Rate',
+                      'value':
+                          '${infusionRateFirst15.toStringAsFixed(2)} mL/hr',
+                    },
+                    {
+                      'title': 'Rate if No Reaction',
+                      'value': '${infusionRateAfter.toStringAsFixed(2)} mL/hr',
+                    },
+                  ],
+                ),
               const SizedBox(height: 16),
               // Add Treatment Button
               if (showAddTreatmentButton)
                 AddTreatmentButton(
                   onTreatmentAdded: () {
-                    setState(() {});
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text('Treatment added successfully!'),
+                        backgroundColor: Colors.green,
+                      ),
+                    );
                   },
                 ),
             ],
@@ -134,10 +167,14 @@ class _BloodTransfusionPageState extends State<BloodTransfusionPage> {
     );
   }
 
-  Widget _buildInputCard(
-      {required String title, required List<Widget> children}) {
+  Widget _buildInputCard({
+    required String title,
+    required List<Widget> children,
+  }) {
     return Card(
+      elevation: 1,
       color: Colors.white,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       child: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -166,64 +203,68 @@ class _BloodTransfusionPageState extends State<BloodTransfusionPage> {
         keyboardType: TextInputType.number,
         decoration: InputDecoration(
           labelText: label,
-          border: const OutlineInputBorder(),
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+          filled: true,
+          fillColor: Colors.teal.shade50,
         ),
       ),
     );
   }
 
-  Widget _buildResults() {
-    return Column(
-      children: [
-        _buildResultContainer(
-          title: 'Results for Cats',
-          content:
-              'Volume Required: ${volumeRequiredCat.toStringAsFixed(2)} mL',
+  Widget buildResultsCard(String title, List<Map<String, String>> results) {
+    return Card(
+      elevation: 2,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      color: Colors.teal[50],
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              title,
+              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 8),
+            ...results.map(
+              (result) => Padding(
+                padding: const EdgeInsets.symmetric(
+                  vertical: 8.0,
+                ),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Expanded(
+                      flex: 3,
+                      child: Text(
+                        result['title']!,
+                        style: const TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w500,
+                          color: Colors.teal,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    Expanded(
+                      flex: 2,
+                      child: Text(
+                        result['value']!,
+                        style: const TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        ),
+                        textAlign: TextAlign.right,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
         ),
-        _buildResultContainer(
-          title: 'Results for Dogs',
-          content:
-              'Volume Required: ${volumeRequiredDog.toStringAsFixed(2)} mL',
-        ),
-        _buildResultContainer(
-          title: 'Infusion Rates',
-          content:
-              'First 15 min: ${infusionRateFirst15.toStringAsFixed(2)} mL/hr\n'
-              'If No Reaction: ${infusionRateAfter.toStringAsFixed(2)} mL/hr',
-        ),
-      ],
-    );
-  }
-
-  Widget _buildResultContainer({
-    required String title,
-    required String content,
-  }) {
-    return Container(
-      width: double.infinity,
-      decoration: BoxDecoration(
-        color: Colors.teal.shade50,
-        borderRadius: BorderRadius.circular(12),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.withOpacity(0.2),
-            blurRadius: 5,
-            spreadRadius: 1,
-          ),
-        ],
-      ),
-      padding: const EdgeInsets.all(16.0),
-      margin: const EdgeInsets.only(bottom: 14),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            title,
-            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-          ),
-          const SizedBox(height: 10),
-          Text(content),
-        ],
       ),
     );
   }
