@@ -35,44 +35,115 @@ class _MainScreenState extends State<MainScreen> {
   }
 
   void _showWelcomeDialog() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    bool hasSeenDialog = prefs.getBool('hasSeenDialog') ?? false;
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
 
-    if (!hasSeenDialog) {
+    // Check if the user has logged in since the last logout
+    bool hasSeenWelcome = prefs.getBool('hasSeenWelcome') ?? false;
+
+    // If the user has logged out and logged back in, show the dialog
+    if (!hasSeenWelcome) {
       String username = currentUser?.displayName ??
           currentUser?.email?.split('@')[0] ??
           'User';
 
       showDialog(
         context: context,
-        barrierDismissible: false,
+        barrierDismissible: false, // Prevent dismissal by tapping outside
         builder: (context) {
           return AlertDialog(
-            title: Text('Hello, $username!'),
-            content: Text('Welcome to VetDose. What would you like to do?'),
-            actions: [
-              ElevatedButton(
-                onPressed: () {
-                  Navigator.pop(context); // Close the dialog
-                },
-                child: Text('Close'),
+            backgroundColor: Colors.teal[50], // Light teal background
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12), // Rounded corners
+            ),
+            title: Center(
+              child: Text(
+                'Hello, $username!',
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.teal[900],
+                ),
+                textAlign: TextAlign.center,
               ),
-              ElevatedButton(
-                onPressed: () {
-                  Navigator.pop(context); // Close the welcome dialog
-                  showAddPatientDialog(context, () {
-                    setState(() {}); // Refresh the UI
-                  });
-                },
-                child: Text('Add Patient'),
+            ),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(
+                  Icons.person_add_alt_1, // A friendly icon to enhance the UI
+                  color: Colors.teal,
+                  size: 48,
+                ),
+                SizedBox(height: 16),
+                Text(
+                  'Welcome to VetDose!',
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.teal[900],
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+                SizedBox(height: 8),
+                Text(
+                  'This app helps you manage your patients seamlessly. Add a new patient now or explore your existing records to get started.',
+                  style: TextStyle(
+                    fontSize: 16,
+                    color: Colors.grey[800],
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+              ],
+            ),
+            actionsPadding: EdgeInsets.only(bottom: 16),
+            actionsAlignment: MainAxisAlignment.spaceEvenly,
+            actions: [
+              SizedBox(
+                width: 120,
+                child: TextButton(
+                  onPressed: () {
+                    Navigator.pop(context); // Close the dialog
+                  },
+                  style: TextButton.styleFrom(
+                    foregroundColor: Colors.teal[800],
+                    textStyle: TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                  child: Text('Later'),
+                ),
+              ),
+              SizedBox(
+                width: 120,
+                child: ElevatedButton(
+                  onPressed: () {
+                    showAddPatientDialog(context, () {
+                      setState(() {
+                        // Update the patient list or UI after the dialog is closed
+                      });
+                    });
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.teal,
+                    foregroundColor: Colors.white,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                  ),
+                  child: Text(
+                    'Add Now',
+                    style: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
               ),
             ],
           );
         },
       );
 
-      // Mark the dialog as shown
-      await prefs.setBool('hasSeenDialog', true);
+      // Mark the welcome dialog as shown
+      await prefs.setBool('hasSeenWelcome', true);
     }
   }
 
@@ -231,7 +302,7 @@ class _MainScreenState extends State<MainScreen> {
             Icon(
               icon,
               size: 37,
-              color: Colors.teal.shade300,
+              color: Colors.teal.shade500,
             ),
             const SizedBox(height: 5),
             Text(

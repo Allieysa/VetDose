@@ -4,7 +4,7 @@ import 'package:vetdose/calculator%20screen/calculator_screen.dart';
 import 'package:vetdose/converter%20screen/converter_first_screen.dart';
 import 'package:vetdose/main%20page/controller.dart';
 import 'package:vetdose/main%20page/main_screen.dart';
-import 'package:vetdose/profile%20screen/patient_history.dart';
+import 'package:vetdose/profile%20screen/patient_list.dart';
 import 'package:vetdose/profile%20screen/profile_screen.dart';
 import 'package:vetdose/utils/instant_page_route.dart';
 import 'splash_screen.dart';

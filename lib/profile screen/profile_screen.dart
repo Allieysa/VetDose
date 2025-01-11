@@ -130,7 +130,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           bool? shouldSignOut = await showDialog(
             context: context,
             builder: (context) => AlertDialog(
-              backgroundColor: Colors.white,
+              backgroundColor: Colors.teal[50],
               title: const Text('Log Out'),
               content: const Text('Are you sure you want to log out?'),
               actions: [

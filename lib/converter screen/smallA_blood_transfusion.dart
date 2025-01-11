@@ -69,9 +69,89 @@ class _BloodTransfusionPageState extends State<BloodTransfusionPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Recipient Information
+              // Recipient Information Card
               _buildInputCard(
-                title: 'Recipient Information',
+                title: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const Text(
+                      'Recipient Information',
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    GestureDetector(
+                      onTap: () {
+                        showDialog(
+                          context: context,
+                          builder: (context) {
+                            return AlertDialog(
+                              backgroundColor: Colors.teal[50],
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              title: const Text(
+                                'Recipient Information',
+                                style: TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.teal,
+                                ),
+                              ),
+                              content: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: const [
+                                  Text(
+                                    'Recipient PCV (%):',
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 16),
+                                  ),
+                                  Text(
+                                    'The percentage of red blood cells in the recipient\'s blood.\n',
+                                    style: TextStyle(fontSize: 14),
+                                  ),
+                                  Text(
+                                    'Desired PCV (%):',
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 16),
+                                  ),
+                                  Text(
+                                    'The target percentage of red blood cells in the recipient\'s blood after the transfusion.\n',
+                                    style: TextStyle(fontSize: 14),
+                                  ),
+                                  Text(
+                                    'Donor PCV (%):',
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 16),
+                                  ),
+                                  Text(
+                                    'The target percentage of red blood cells in the donor\'s blood after the transfusion.\n',
+                                    style: TextStyle(fontSize: 14),
+                                  ),
+                                ],
+                              ),
+                              actions: [
+                                TextButton(
+                                  onPressed: () => Navigator.pop(context),
+                                  child: const Text('Close'),
+                                ),
+                              ],
+                            );
+                          },
+                        );
+                      },
+                      child: const Icon(
+                        Icons.info_outline,
+                        color: Colors.teal,
+                      ),
+                    ),
+                  ],
+                ),
                 children: [
                   _buildTextField(
                     controller: recipientWeightController,
@@ -87,10 +167,18 @@ class _BloodTransfusionPageState extends State<BloodTransfusionPage> {
                   ),
                 ],
               ),
+
               const SizedBox(height: 20),
-              // Donor Information
+
+              // Donor Information Card
               _buildInputCard(
-                title: 'Donor Information',
+                title: const Text(
+                  'Donor Information',
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
                 children: [
                   _buildTextField(
                     controller: donorWeightController,
@@ -102,6 +190,7 @@ class _BloodTransfusionPageState extends State<BloodTransfusionPage> {
                   ),
                 ],
               ),
+
               const SizedBox(height: 20),
               // Calculate Button
               ElevatedButton(
@@ -122,6 +211,7 @@ class _BloodTransfusionPageState extends State<BloodTransfusionPage> {
                   style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                 ),
               ),
+
               const SizedBox(height: 20),
               // Results Display
               if (showAddTreatmentButton)
@@ -168,7 +258,7 @@ class _BloodTransfusionPageState extends State<BloodTransfusionPage> {
   }
 
   Widget _buildInputCard({
-    required String title,
+    required Widget title,
     required List<Widget> children,
   }) {
     return Card(
@@ -180,10 +270,7 @@ class _BloodTransfusionPageState extends State<BloodTransfusionPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              title,
-              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-            ),
+            title,
             const SizedBox(height: 10),
             ...children,
           ],

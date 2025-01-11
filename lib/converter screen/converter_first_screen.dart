@@ -16,6 +16,8 @@ class ConverterScreen extends StatelessWidget {
       backgroundColor: const Color.fromARGB(255, 241, 250, 250),
       appBar: AppBar(
         backgroundColor: const Color.fromARGB(255, 241, 250, 250),
+        elevation: 0,
+        centerTitle: true,
       ),
       body: Center(
         child: Column(
@@ -32,29 +34,64 @@ class ConverterScreen extends StatelessWidget {
                 );
               },
               child: Container(
-                height: 100,
-                width: MediaQuery.of(context).size.width * 0.8,
+                height: 140,
+                width: MediaQuery.of(context).size.width * 0.85,
+                padding: const EdgeInsets.all(12.0),
                 decoration: BoxDecoration(
                   color: Colors.white,
-                  borderRadius: BorderRadius.circular(10),
+                  borderRadius: BorderRadius.circular(15),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.grey.withOpacity(0.2),
-                      spreadRadius: 1,
-                      blurRadius: 1,
+                      color: Colors.grey.withOpacity(0.3),
+                      spreadRadius: 2,
+                      blurRadius: 4,
                       offset: const Offset(0, 3),
                     ),
                   ],
                 ),
-                child: const Center(
-                  child: Text(
-                    'Small Animal',
-                    style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.teal,
+                child: Row(
+                  children: [
+                    // Icon Section
+                    Container(
+                      height: 100,
+                      width: 100,
+                      decoration: BoxDecoration(
+                        color: Colors.teal.shade50,
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: const Icon(
+                        Icons.pets,
+                        size: 50,
+                        color: Colors.teal,
+                      ),
                     ),
-                  ),
+                    const SizedBox(width: 12),
+                    // Text Section
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: const [
+                          Text(
+                            'Small Animal',
+                            style: TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.teal,
+                            ),
+                          ),
+                          SizedBox(height: 5),
+                          Text(
+                            'Small animals include companion pets such as cats and dogs.',
+                            style: TextStyle(
+                              fontSize: 13,
+                              color: Colors.grey,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ),
@@ -70,29 +107,64 @@ class ConverterScreen extends StatelessWidget {
                 );
               },
               child: Container(
-                height: 100,
-                width: MediaQuery.of(context).size.width * 0.8,
+                height: 140,
+                width: MediaQuery.of(context).size.width * 0.85,
+                padding: const EdgeInsets.all(12.0),
                 decoration: BoxDecoration(
                   color: Colors.white,
-                  borderRadius: BorderRadius.circular(10),
+                  borderRadius: BorderRadius.circular(15),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.grey.withOpacity(0.2),
-                      spreadRadius: 1,
-                      blurRadius: 2,
+                      color: Colors.grey.withOpacity(0.3),
+                      spreadRadius: 2,
+                      blurRadius: 4,
                       offset: const Offset(0, 3),
                     ),
                   ],
                 ),
-                child: const Center(
-                  child: Text(
-                    'Large Animal',
-                    style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.teal,
+                child: Row(
+                  children: [
+                    // Icon Section
+                    Container(
+                      height: 100,
+                      width: 100,
+                      decoration: BoxDecoration(
+                        color: Colors.teal.shade50,
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: const Icon(
+                        Icons.hourglass_bottom,
+                        size: 50,
+                        color: Colors.teal,
+                      ),
                     ),
-                  ),
+                    const SizedBox(width: 12),
+                    // Text Section
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: const [
+                          Text(
+                            'Large Animal',
+                            style: TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.teal,
+                            ),
+                          ),
+                          SizedBox(height: 5),
+                          Text(
+                            'Large animals include livestock such as cattle, horse, goat, sheep, pigs, camel.',
+                            style: TextStyle(
+                              fontSize: 13,
+                              color: Colors.grey,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ),

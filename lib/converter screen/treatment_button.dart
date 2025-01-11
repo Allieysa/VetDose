@@ -76,53 +76,58 @@ class AddTreatmentButton extends StatelessWidget {
                   final patientData = patient.data() as Map<String, dynamic>;
 
                   return GestureDetector(
-                    onTap: () {
-                      Navigator.pop(context);
-                      _addTreatment(context, patientId);
-                    },
-                    child: Container(
-                      margin: EdgeInsets.symmetric(vertical: 8.0),
-                      padding: EdgeInsets.all(16.0),
-                      decoration: BoxDecoration(
-                        color: Colors.white, // White background for list items
-                        borderRadius: BorderRadius.circular(12.0),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.grey.withOpacity(0.3),
-                            spreadRadius: 2,
-                            blurRadius: 5,
-                            offset: Offset(0, 3), // Changes position of shadow
-                          ),
-                        ],
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            '${patientData['name']}',
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 18.0,
-                              color: Colors.teal[900],
+                      onTap: () {
+                        Navigator.pop(context);
+                        _addTreatment(context, patientId);
+                      },
+                      child: Container(
+                        margin: EdgeInsets.symmetric(vertical: 8.0),
+                        padding: EdgeInsets.all(16.0),
+                        decoration: BoxDecoration(
+                          color:
+                              Colors.white, // White background for list items
+                          borderRadius: BorderRadius.circular(12.0),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.grey.withOpacity(0.3),
+                              spreadRadius: 2,
+                              blurRadius: 5,
+                              offset:
+                                  Offset(0, 3), // Changes position of shadow
                             ),
-                          ),
-                          SizedBox(height: 8.0),
-                          Text(
-                            'Type: ${patientData['type']}',
-                            style: TextStyle(color: Colors.teal[800]),
-                          ),
-                          Text(
-                            'Age: ${patientData['age']}',
-                            style: TextStyle(color: Colors.teal[800]),
-                          ),
-                          Text(
-                            'Weight: ${patientData['weight']} kg',
-                            style: TextStyle(color: Colors.teal[800]),
-                          ),
-                        ],
-                      ),
-                    ),
-                  );
+                          ],
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'Case: ${patientData['case_number']}',
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 18.0,
+                                color: Colors.teal[900],
+                              ),
+                            ),
+                            SizedBox(height: 8.0),
+                            Text(
+                              'Animal ID: ${patientData['animal_id']}',
+                              style: TextStyle(color: Colors.teal[800]),
+                            ),
+                            Text(
+                              'Species: ${patientData['species']}',
+                              style: TextStyle(color: Colors.teal[800]),
+                            ),
+                            Text(
+                              'Age: ${patientData['age']}',
+                              style: TextStyle(color: Colors.teal[800]),
+                            ),
+                            Text(
+                              'Weight: ${patientData['weight']} kg',
+                              style: TextStyle(color: Colors.teal[800]),
+                            ),
+                          ],
+                        ),
+                      ));
                 },
               );
             },

@@ -1,7 +1,7 @@
 name: vetdose
 description: "A new Flutter project."
 # Prevent the package from being accidentally published to pub.dev.
-publish_to: "none" 
+publish_to: "none"
 
 version: 1.0.0+1
 
@@ -13,8 +13,6 @@ dependencies:
     sdk: flutter
   video_player: ^2.2.19
   chewie: ^1.8.5
-
-  # Cupertino Icons for iOS style icons.
   cupertino_icons: ^1.0.8
   firebase_auth: ^5.3.1
   cloud_firestore: ^5.4.4

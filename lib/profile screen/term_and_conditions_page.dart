@@ -31,7 +31,7 @@ class TermsAndConditionsScreen extends StatelessWidget {
                   color: Colors.teal[800],
                 ),
               ),
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
               // Scrollable Content
               Expanded(
                 child: Container(
@@ -44,39 +44,55 @@ class TermsAndConditionsScreen extends StatelessWidget {
                         color: Colors.grey.withOpacity(0.2),
                         spreadRadius: 2,
                         blurRadius: 5,
-                        offset: Offset(0, 3), // Shadow position
+                        offset: const Offset(0, 3), // Shadow position
                       ),
                     ],
                   ),
                   child: SingleChildScrollView(
-                    child: Text(
-                      '''
-By using this app, you agree to the following terms and conditions:
-
-1. Usage:
-   - This app is provided for personal and non-commercial use only.
-
-2. Data Collection:
-   - We may collect certain information to improve the user experience.
-   - Any data shared with us will be handled securely and privately.
-
-3. Limitations:
-   - We do not guarantee uninterrupted or error-free service.
-
-4. User Conduct:
-   - Users must not engage in unlawful or harmful activities using this app.
-
-5. Liability:
-   - We are not liable for any damage or loss resulting from the use of this app.
-
-For further details, contact us at support@appname.com.
-                      ''',
-                      style: TextStyle(fontSize: 14, color: Colors.grey[800]),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        _buildTermsSection(
+                          '1. Usage:',
+                          'This app is provided for personal and non-commercial use only.',
+                        ),
+                        _buildTermsSection(
+                          '2. Data Collection:',
+                          'We may collect certain information to improve the user experience. Any data shared with us will be handled securely and privately.',
+                        ),
+                        _buildTermsSection(
+                          '3. Limitations:',
+                          'We do not guarantee uninterrupted or error-free service.',
+                        ),
+                        _buildTermsSection(
+                          '4. User Conduct:',
+                          'Users must not engage in unlawful or harmful activities using this app.',
+                        ),
+                        _buildTermsSection(
+                          '5. Liability:',
+                          'We are not liable for any damage or loss resulting from the use of this app.',
+                        ),
+                        const SizedBox(height: 10),
+                        Text(
+                          'For further details, contact us at:',
+                          style:
+                              TextStyle(fontSize: 14, color: Colors.grey[800]),
+                        ),
+                        const SizedBox(height: 5),
+                        Text(
+                          'allieysaghani06@gmail.com',
+                          style: TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.teal[800],
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                 ),
               ),
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
               // Close Button
               Center(
                 child: ElevatedButton(
@@ -85,11 +101,10 @@ For further details, contact us at support@appname.com.
                     backgroundColor: Colors.teal,
                     foregroundColor: Colors.white,
                     shape: RoundedRectangleBorder(
-                      borderRadius:
-                          BorderRadius.circular(12), // Rounded corners
+                      borderRadius: BorderRadius.circular(12),
                     ),
                   ),
-                  child: Text(
+                  child: const Text(
                     'Close',
                     style: TextStyle(
                       fontSize: 14,
@@ -101,6 +116,31 @@ For further details, contact us at support@appname.com.
             ],
           ),
         ),
+      ),
+    );
+  }
+
+  // Helper function to build each section
+  Widget _buildTermsSection(String title, String description) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 12.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            title,
+            style: const TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.bold,
+              color: Colors.teal,
+            ),
+          ),
+          const SizedBox(height: 4),
+          Text(
+            description,
+            style: TextStyle(fontSize: 14, color: Colors.grey[800]),
+          ),
+        ],
       ),
     );
   }

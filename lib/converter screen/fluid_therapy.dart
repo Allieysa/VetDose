@@ -13,6 +13,9 @@ class _FluidTherapyState extends State<FluidTherapy> {
   final TextEditingController maintenanceVolumeController =
       TextEditingController();
   final TextEditingController fluidGivenController = TextEditingController();
+  final TextEditingController fluidAlreadyGivenController =
+      TextEditingController();
+  final TextEditingController dripSetController = TextEditingController();
 
   double replacementVolume = 0.0;
   double maintenanceVolume = 0.0;
@@ -35,6 +38,10 @@ class _FluidTherapyState extends State<FluidTherapy> {
     double maintenanceVolumeRate =
         double.tryParse(maintenanceVolumeController.text) ?? 0.0;
     double fluidGiven = double.tryParse(fluidGivenController.text) ?? 1.0;
+    double fluidAlreadyGiven =
+        double.tryParse(fluidAlreadyGivenController.text) ?? 0.0;
+    double dripSet = double.tryParse(dripSetController.text) ??
+        20.0; // Default to 20 drops/mL
 
     if (weight <= 0 || replacementPercent <= 0 || maintenanceVolumeRate <= 0) {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
@@ -55,16 +62,20 @@ class _FluidTherapyState extends State<FluidTherapy> {
       // Ongoing Losses Volume (assumed input, set as 0 for now)
       ongoingLossesVolume = 0.0;
 
-      // Total Volume Calculation
-      totalVolume = replacementVolume + maintenanceVolume + ongoingLossesVolume;
+      // Total Volume Calculation (subtract fluid already given)
+      totalVolume =
+          (replacementVolume + maintenanceVolume + ongoingLossesVolume) -
+              fluidAlreadyGiven;
+
+      // Ensure total volume is not negative
+      if (totalVolume < 0) totalVolume = 0;
 
       // Volume to Be Delivered Calculations
       volumeToBeDeliveredPerHour = totalVolume / fluidGiven;
       volumeToBeDeliveredPerMinute = volumeToBeDeliveredPerHour / 60;
       volumeToBeDeliveredPerSecond = volumeToBeDeliveredPerMinute / 60;
 
-      // Drip Calculations
-      double dripSet = 60; // Micro drip set (drops/mL)
+      // Drip Calculations using the user-defined drip set value
       dropsPerMinute = volumeToBeDeliveredPerHour * dripSet / 60;
       dropsPer10Seconds = dropsPerMinute / 6;
       dropsPerSecond = dropsPerMinute / 60;
@@ -181,17 +192,119 @@ class _FluidTherapyState extends State<FluidTherapy> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                'Enter Animal Data',
-                style: TextStyle(fontSize: 18),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    'Enter Animal Data',
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  ),
+                  GestureDetector(
+                    onTap: () {
+                      showDialog(
+                        context: context,
+                        builder: (context) {
+                          return AlertDialog(
+                            backgroundColor: Colors.teal[50],
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            title: Text(
+                              'Parameter Descriptions',
+                              style: TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.teal[800],
+                              ),
+                            ),
+                            content: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: const [
+                                Text(
+                                  'Drip Set (drops/mL):',
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 16,
+                                  ),
+                                ),
+                                Text(
+                                  'The type of IV set used, which determines the number of drops per mL (e.g., 10, 15, or 20 drops/mL).\n',
+                                  style: TextStyle(fontSize: 14),
+                                ),
+                                Text(
+                                  'Replacement Percent (%):',
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 16,
+                                  ),
+                                ),
+                                Text(
+                                  'The percentage of fluid volume required to replace lost fluids due to dehydration or fluid deficit.\n',
+                                  style: TextStyle(fontSize: 14),
+                                ),
+                                Text(
+                                  'Maintenance (mL/kg):',
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 16,
+                                  ),
+                                ),
+                                Text(
+                                  'Volume of fluid required to meet the animal’s daily metabolic needs under normal conditions.\n',
+                                  style: TextStyle(fontSize: 14),
+                                ),
+                                Text(
+                                  'Fluid Duration (hours):',
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 16,
+                                  ),
+                                ),
+                                Text(
+                                  'The time period over which the fluid will be administered.\n',
+                                  style: TextStyle(fontSize: 14),
+                                ),
+                                Text(
+                                  'Fluid Already Given (mL):',
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 16,
+                                  ),
+                                ),
+                                Text(
+                                  'The amount of fluid that has already been administered to the animal.\n',
+                                  style: TextStyle(fontSize: 14),
+                                ),
+                              ],
+                            ),
+                            actions: [
+                              TextButton(
+                                onPressed: () => Navigator.pop(context),
+                                child: Text('Close'),
+                              ),
+                            ],
+                          );
+                        },
+                      );
+                    },
+                    child: Icon(
+                      Icons.info_outline,
+                      color: Colors.teal,
+                    ),
+                  ),
+                ],
               ),
               SizedBox(height: 10),
               buildInputField('Weight (kg)', weightController),
+              buildInputField('Drip Set (drops/mL)', dripSetController),
               buildInputField(
                   'Replacement Percent (%)', replacementPercentController),
               buildInputField(
                   'Maintenance (mL/kg)', maintenanceVolumeController),
               buildInputField('Fluid Duration (hours)', fluidGivenController),
+              buildInputField(
+                  'Fluid Already Given (mL)', fluidAlreadyGivenController),
               SizedBox(height: 20),
               ElevatedButton(
                 onPressed: calculateResults,

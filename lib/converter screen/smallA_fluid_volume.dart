@@ -146,16 +146,99 @@ class _FluidVolumePageState extends State<FluidVolumePage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                'Enter Animal Data',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    'Enter Animal Data',
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  ),
+                  InkWell(
+                    onTap: () {
+                      showDialog(
+                        context: context,
+                        builder: (context) {
+                          return AlertDialog(
+                            backgroundColor:
+                                Colors.teal[50], // White background
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            title: Text(
+                              'Parameter Descriptions',
+                              style: TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.teal[800],
+                              ),
+                            ),
+                            content: SingleChildScrollView(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    'Dehydration:',
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 16),
+                                  ),
+                                  Text(
+                                    'The percentage of body fluid loss. Common ranges: 5-10%.\n',
+                                    style: TextStyle(fontSize: 14),
+                                  ),
+                                  Text(
+                                    'Diuresis Rate:',
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 16),
+                                  ),
+                                  Text(
+                                    'The amount of urine produced over time, indicating kidney function and fluid balance.\n',
+                                    style: TextStyle(fontSize: 14),
+                                  ),
+                                  Text(
+                                    'Fluid Loss:',
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 16),
+                                  ),
+                                  Text(
+                                    'Fluids lost due to vomiting, diarrhea, or excessive urination.',
+                                    style: TextStyle(fontSize: 14),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            actions: [
+                              TextButton(
+                                onPressed: () => Navigator.pop(context),
+                                child: Text('Close'),
+                              ),
+                            ],
+                          );
+                        },
+                      );
+                    },
+                    child: Icon(Icons.info_outline, color: Colors.teal),
+                  ),
+                ],
               ),
               SizedBox(height: 10),
+
+              // Body Weight Input Field
               buildInputField('Body Weight (kg)', weightController),
+
+              // Dehydration Input Field
               buildInputField('Dehydration (%)', dehydrationController),
+
+              // Diuresis Rate Input Field
               buildInputField('Diuresis Rate', diuresisRateController),
+
+              // Fluid Loss Input Field
               buildInputField('Fluid Loss', fluidLossController),
+
               SizedBox(height: 20),
+
               ElevatedButton(
                 onPressed: calculateResults,
                 style: ElevatedButton.styleFrom(
@@ -198,7 +281,7 @@ class _FluidVolumePageState extends State<FluidVolumePage> {
                       },
                     ]),
                     SizedBox(height: 20),
-                    buildResultsCard('Results for Cats:', [
+                    buildResultsCard('Results for Cats/Small dogs (<10 kg):', [
                       {
                         'title': 'Total Fluid Requirement',
                         'value':

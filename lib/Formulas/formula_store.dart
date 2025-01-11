@@ -132,7 +132,7 @@ class FormulaStore {
           "5 ml/kg/hr": "(60/(5*kg))",
           "10 ml/kg/hr": "(60/(10*kg))",
         },
-        "unit": "drops/min",
+        "unit": "sec/drop",
       },
       "Macrodrip": {
         "formulas": {
@@ -140,7 +140,7 @@ class FormulaStore {
           "5 ml/kg/hr": "(60/((5*kg)/3))",
           "10 ml/kg/hr": "(60/((10*kg)/3))",
         },
-        "unit": "drops/min",
+        "unit": "sec/drop",
       },
     },
     "Inotropic": {
