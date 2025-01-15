@@ -110,7 +110,7 @@ class _BloodTransfusionPageState extends State<BloodTransfusionPage> {
                                         fontSize: 16),
                                   ),
                                   Text(
-                                    'The percentage of red blood cells in the recipient\'s blood.\n',
+                                    'The initial percentage of cells in the recipient\'s blood.\n',
                                     style: TextStyle(fontSize: 14),
                                   ),
                                   Text(
@@ -120,7 +120,7 @@ class _BloodTransfusionPageState extends State<BloodTransfusionPage> {
                                         fontSize: 16),
                                   ),
                                   Text(
-                                    'The target percentage of red blood cells in the recipient\'s blood after the transfusion.\n',
+                                    'The target percentage of cells in the recipient\'s blood after the transfusion.\n',
                                     style: TextStyle(fontSize: 14),
                                   ),
                                   Text(
@@ -130,7 +130,7 @@ class _BloodTransfusionPageState extends State<BloodTransfusionPage> {
                                         fontSize: 16),
                                   ),
                                   Text(
-                                    'The target percentage of red blood cells in the donor\'s blood after the transfusion.\n',
+                                    'The percentage of cells in the donor\'s blood.\n',
                                     style: TextStyle(fontSize: 14),
                                   ),
                                 ],

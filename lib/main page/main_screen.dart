@@ -156,12 +156,13 @@ class _MainScreenState extends State<MainScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final String username = currentUser?.displayName ?? 'User';
     return Scaffold(
         backgroundColor: const Color.fromARGB(255, 241, 250, 250),
         appBar: AppBar(
           backgroundColor: const Color.fromARGB(255, 241, 250, 250),
           title: Text(
-            'Hello, ${currentUser?.displayName ?? 'User'}!',
+            'Hello, $username!',
             style: TextStyle(
               fontFamily: 'SF Pro',
               fontSize: 19,

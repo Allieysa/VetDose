@@ -80,7 +80,7 @@ class LargeAnimalConverter extends StatelessWidget {
                     // Icon Section
                     Container(
                       width: 78.0,
-                      height: 90.0,
+                      height: 92.0,
                       decoration: BoxDecoration(
                         color: Colors.teal.withOpacity(0.1),
                         borderRadius: BorderRadius.only(

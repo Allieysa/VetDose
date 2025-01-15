@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:vetdose/main%20page/controller.dart';
 import 'signup_screen.dart';
+import 'package:vetdose/forgot_password_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -32,18 +33,38 @@ class _LoginScreenState extends State<LoginScreen> {
     });
 
     try {
-      // ignore: unused_local_variable
       UserCredential userCredential = await _auth.signInWithEmailAndPassword(
         email: _emailController.text.trim(),
         password: _passwordController.text.trim(),
       );
 
-      final controller = Controller(); // Create a Controller instance
-      Navigator.pushReplacementNamed(
-        context,
-        '/home',
-        arguments: {'controller': controller, 'showWelcome': true},
-      );
+      User? user = userCredential.user;
+
+      if (user != null) {
+        // Check if the email is verified
+        if (!user.emailVerified) {
+          setState(() {
+            _errorMessage = 'Please verify your email before logging in.';
+          });
+
+          // Optionally resend verification email
+          await user.sendEmailVerification();
+
+          // Show verification reminder dialog after a delay to ensure error message is visible
+          Future.delayed(Duration(milliseconds: 300), () {
+            _showVerificationDialog(user);
+          });
+          return;
+        }
+
+        // Navigate to home screen if email is verified
+        final controller = Controller(); // Create a Controller instance
+        Navigator.pushReplacementNamed(
+          context,
+          '/home',
+          arguments: {'controller': controller, 'showWelcome': true},
+        );
+      }
     } on FirebaseAuthException catch (e) {
       setState(() {
         _errorMessage = e.message ?? 'An error occurred';
@@ -53,6 +74,65 @@ class _LoginScreenState extends State<LoginScreen> {
         _isLoading = false;
       });
     }
+  }
+
+  void _showVerificationDialog(User user) {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => AlertDialog(
+        backgroundColor: Colors.teal.shade50,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12),
+        ),
+        title: Row(
+          children: [
+            Icon(Icons.info_outline, color: Colors.teal, size: 24),
+            SizedBox(width: 8),
+            Text(
+              'Verify Your Email',
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+                color: Colors.teal[800],
+              ),
+            ),
+          ],
+        ),
+        content: Text(
+          'A verification email has been sent to ${user.email}. Please check your inbox and click the verification link.',
+          style: TextStyle(fontSize: 14, color: Colors.teal[700]),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () async {
+              await user.sendEmailVerification();
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text('Verification email resent.'),
+                  backgroundColor: Colors.green,
+                ),
+              );
+            },
+            style: TextButton.styleFrom(
+              foregroundColor: Colors.teal[800],
+            ),
+            child: Text('Resend Email'),
+          ),
+          ElevatedButton(
+            onPressed: () => Navigator.pop(context),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.teal,
+              foregroundColor: Colors.white,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8),
+              ),
+            ),
+            child: Text('OK'),
+          ),
+        ],
+      ),
+    );
   }
 
   @override
@@ -178,6 +258,31 @@ class _LoginScreenState extends State<LoginScreen> {
                       },
                       child: Text(
                         'Sign up',
+                        style: TextStyle(
+                          color: Colors.teal.shade700,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                    SizedBox(
+                        width: 10), // Space between Sign up and Forgot Password
+                    Text(
+                      '|',
+                      style: TextStyle(color: Colors.teal.shade600),
+                    ),
+                    SizedBox(
+                        width:
+                            10), // Space between separator and Forgot Password
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => ForgotPasswordScreen()),
+                        );
+                      },
+                      child: Text(
+                        'Forgot Password?',
                         style: TextStyle(
                           color: Colors.teal.shade700,
                           fontWeight: FontWeight.bold,

@@ -53,7 +53,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        currentUser?.displayName ?? 'User Name',
+                        currentUser?.displayName ?? 'Username',
                         style: const TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.bold,

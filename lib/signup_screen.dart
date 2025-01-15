@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'login_screen.dart';
 
+
 class SignUpScreen extends StatefulWidget {
   @override
   _SignUpScreenState createState() => _SignUpScreenState();
@@ -31,6 +32,13 @@ class _SignUpScreenState extends State<SignUpScreen> {
       return;
     }
 
+    if (_usernameController.text.trim().isEmpty) {
+      setState(() {
+        _errorMessage = 'Username cannot be empty.';
+      });
+      return;
+    }
+
     setState(() {
       _isLoading = true;
       _errorMessage = '';
@@ -47,14 +55,14 @@ class _SignUpScreenState extends State<SignUpScreen> {
       // Update the user's profile to include the username
       await userCredential.user!
           .updateDisplayName(_usernameController.text.trim());
-      await userCredential.user!
-          .reload(); // Reload user to ensure changes are applied
 
-      // Navigate to LoginScreen after successful sign up
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => LoginScreen()),
-      );
+      // Send email verification
+      await userCredential.user!.sendEmailVerification();
+
+      setState(() {});
+
+      // Show a dialog allowing users to resend the verification email
+      _showVerificationDialog(userCredential.user!);
     } on FirebaseAuthException catch (e) {
       setState(() {
         _errorMessage = e.message ?? 'An error occurred';
@@ -65,6 +73,88 @@ class _SignUpScreenState extends State<SignUpScreen> {
       });
     }
   }
+
+  void _showVerificationDialog(User user) {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => AlertDialog(
+        backgroundColor: Colors.teal.shade50,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12),
+        ),
+        title: Row(
+          children: [
+            Icon(Icons.info_outline, color: Colors.teal, size: 24),
+            SizedBox(width: 8),
+            Text(
+              'Verify Your Email',
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+                color: Colors.teal[800],
+              ),
+            ),
+          ],
+        ),
+        content: Text(
+          'A verification email has been sent to ${user.email}. Please check your inbox and click the verification link.',
+          style: TextStyle(fontSize: 14, color: Colors.teal[700]),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () async {
+              try {
+                await user.reload(); // Refresh the user instance
+                User? refreshedUser = FirebaseAuth.instance.currentUser;
+
+                if (refreshedUser != null && !refreshedUser.emailVerified) {
+                  await refreshedUser.sendEmailVerification();
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text('Verification email resent.'),
+                      backgroundColor: Colors.green,
+                    ),
+                  );
+                } else {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text('Your email is already verified.'),
+                      backgroundColor: Colors.orange,
+                    ),
+                  );
+                }
+              } catch (e) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content:
+                        Text('Failed to resend email. Please try again later.'),
+                    backgroundColor: Colors.red,
+                  ),
+                );
+              }
+            },
+            style: TextButton.styleFrom(
+              foregroundColor: Colors.teal[800],
+            ),
+            child: Text('Resend Email'),
+          ),
+          ElevatedButton(
+            onPressed: () => Navigator.pop(context),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.teal,
+              foregroundColor: Colors.white,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8),
+              ),
+            ),
+            child: Text('OK'),
+          ),
+        ],
+      ),
+    );
+  }
+
 
   @override
   Widget build(BuildContext context) {

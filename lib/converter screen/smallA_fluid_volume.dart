@@ -193,7 +193,7 @@ class _FluidVolumePageState extends State<FluidVolumePage> {
                                         fontSize: 16),
                                   ),
                                   Text(
-                                    'The amount of urine produced over time, indicating kidney function and fluid balance.\n',
+                                    'The process of producing increased/excess and passage of urine.\n',
                                     style: TextStyle(fontSize: 14),
                                   ),
                                   Text(

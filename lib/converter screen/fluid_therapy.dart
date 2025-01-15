@@ -229,7 +229,7 @@ class _FluidTherapyState extends State<FluidTherapy> {
                                   ),
                                 ),
                                 Text(
-                                  'The type of IV set used, which determines the number of drops per mL (e.g., 10, 15, or 20 drops/mL).\n',
+                                  'The type of IV set used, which determines the number of drops per mL (e.g., microdrip or macrodrip).\n',
                                   style: TextStyle(fontSize: 14),
                                 ),
                                 Text(
